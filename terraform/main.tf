@@ -1,5 +1,6 @@
 locals {
   jar_path = "${path.module}/../lambda/funcao-um/target/funcao-um-1.0.0.jar"
+
 }
 
 module "lambda_funcao_um" {

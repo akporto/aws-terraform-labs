@@ -1,0 +1,52 @@
+# Maven
+target/
+*.jar
+*.class
+*.properties
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Eclipse
+*.project
+*.classpath
+
+# Terraform
+terraform.tfstate
+backend.tf
+terraform.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+
+# Node.js
+node_modules/
+
+# PHP Composer
+vendor/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Arquivos de Backup e Temporários
+*~
+*.bak
+*.orig
+
+# Logs e Relatórios
+*.log
+*.out
+
+# Configuração do Git
+.gitconfig
+.git-credentials
+
+# Arquivos Sensíveis
+*.env
+*.pem
+
+# Outros
+*.DS_Store
+*.swp
+

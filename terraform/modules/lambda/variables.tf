@@ -5,6 +5,7 @@
 variable "function_name" {
   description = "Nome da função Lambda"
   type        = string
+  default = "helloTerraformLambda"
 }
 
 # Descrição textual da função Lambda

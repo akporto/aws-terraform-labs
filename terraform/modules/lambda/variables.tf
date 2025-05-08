@@ -1,6 +1,3 @@
-# Variáveis de configuração da função Lambda
-# ======================================
-
 # Nome único para identificar a função Lambda na AWS
 variable "function_name" {
   description = "Nome da função Lambda"

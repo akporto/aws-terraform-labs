@@ -35,15 +35,13 @@ public class FuncaoDoisHandler implements RequestHandler<APIGatewayProxyRequestE
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 
         try {
-            // input JSON
+          
             MarketItem item = objectMapper.readValue(input.getBody(), MarketItem.class);
 
-            // Validações básicas
             if (item.getName() == null || item.getName().trim().isEmpty()) {
                 return createErrorResponse(400, "O nome do item é obrigatório");
             }
 
-            // Gera ID único para o item
             String itemId = UUID.randomUUID().toString();
 
             // Gera chave de partição baseada na data atual (YYYYMMDD)
@@ -81,7 +79,7 @@ public class FuncaoDoisHandler implements RequestHandler<APIGatewayProxyRequestE
                     .writerWithDefaultPrettyPrinter()
                     .writeValueAsString(responseBody));
 
-            // Retorna resposta de sucesso
+            // Retorna resposta
             response.setStatusCode(201); // Created
             response.setBody(objectMapper.writeValueAsString(responseBody));
             response.setHeaders(Map.of("Content-Type", "application/json"));
@@ -113,7 +111,7 @@ public class FuncaoDoisHandler implements RequestHandler<APIGatewayProxyRequestE
     }
 
 
-     // Classe para deserializar o input JSON
+     // Classe para deserializar JSON
 
     public static class MarketItem {
         private String name;

@@ -1,6 +1,5 @@
 package com.example;
 
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
@@ -32,66 +31,66 @@ public class FuncaoDoisHandler implements RequestHandler<APIGatewayProxyRequestE
     @Override
     public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent input, Context context) {
         context.getLogger().log("Processando requisição para adicionar item à lista de mercado");
-        APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 
         try {
-            // input JSON
-            MarketItem item = objectMapper.readValue(input.getBody(), MarketItem.class);
+            // Validação do corpo da requisição
+            if (input.getBody() == null || input.getBody().trim().isEmpty()) {
+                return createErrorResponse(400, "O corpo da requisição não pode estar vazio");
+            }
 
-            // Validações básicas
+            MarketItem item;
+            try {
+                item = objectMapper.readValue(input.getBody(), MarketItem.class);
+            } catch (Exception e) {
+                return createErrorResponse(400, "Formato JSON inválido no corpo da requisição");
+            }
+
+            // Validação do campo name
             if (item.getName() == null || item.getName().trim().isEmpty()) {
                 return createErrorResponse(400, "O nome do item é obrigatório");
             }
 
-            // Gera ID único para o item
+            // Geração dos identificadores
             String itemId = UUID.randomUUID().toString();
+            String pk = "LIST#" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")); // Prefixo LIST# para compatibilidade
+            String sk = "ITEM#" + itemId; // Padrão de chave para itens
 
-            // Gera chave de partição baseada na data atual (YYYYMMDD)
-            String pk = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-
-            // Cria mapa de atributos para o DynamoDB
+            // Construção do item para DynamoDB
             Map<String, AttributeValue> itemAttributes = new HashMap<>();
             itemAttributes.put("PK", new AttributeValue(pk));
-            itemAttributes.put("itemId", new AttributeValue(itemId));
+            itemAttributes.put("SK", new AttributeValue(sk));
             itemAttributes.put("name", new AttributeValue(item.getName()));
             itemAttributes.put("date", new AttributeValue(LocalDate.now().toString()));
-            itemAttributes.put("status", new AttributeValue("todo"));
+            itemAttributes.put("status", new AttributeValue("TODO")); // Padronizado para maiúsculo
 
-            // Salva no DynamoDB
-            PutItemRequest putItemRequest = new PutItemRequest()
+            // Log para debug
+            context.getLogger().log("Dados do item a ser salvo: " + itemAttributes.toString());
+
+            // Inserção no DynamoDB
+            dynamoDbClient.putItem(new PutItemRequest()
                     .withTableName(tableName)
-                    .withItem(itemAttributes);
+                    .withItem(itemAttributes));
 
-            context.getLogger().log("Salvando item no DynamoDB: " + pk + " - " + itemId);
-            dynamoDbClient.putItem(putItemRequest);
-
-            // Cria objeto de resposta
+            // Construção da resposta
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("success", true);
             responseBody.put("message", "Item adicionado com sucesso à lista de mercado");
             responseBody.put("item", Map.of(
-                    "pk", pk,
-                    "itemId", itemId,
+                    "PK", pk,
+                    "SK", sk,
                     "name", item.getName(),
                     "date", LocalDate.now().toString(),
-                    "status", "todo"
+                    "status", "TODO" // Consistente com o valor salvo
             ));
 
-            context.getLogger().log("Resposta: " + objectMapper
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(responseBody));
-
-            // Retorna resposta de sucesso
-            response.setStatusCode(201); // Created
-            response.setBody(objectMapper.writeValueAsString(responseBody));
-            response.setHeaders(Map.of("Content-Type", "application/json"));
-
-            context.getLogger().log("Item adicionado com sucesso: " + itemId);
-            return response;
+            return new APIGatewayProxyResponseEvent()
+                    .withStatusCode(201)
+                    .withBody(objectMapper.writeValueAsString(responseBody))
+                    .withHeaders(Map.of("Content-Type", "application/json"));
 
         } catch (Exception e) {
-            context.getLogger().log("Erro ao processar a solicitação: " + e.getMessage());
-            return createErrorResponse(500, "Erro ao processar a solicitação: " + e.getMessage());
+            context.getLogger().log("Erro detalhado: " + e.toString());
+            return createErrorResponse(500, "Erro interno ao processar a solicitação");
         }
     }
 
@@ -111,9 +110,6 @@ public class FuncaoDoisHandler implements RequestHandler<APIGatewayProxyRequestE
         }
         return response;
     }
-
-
-     // Classe para deserializar o input JSON
 
     public static class MarketItem {
         private String name;

@@ -33,7 +33,7 @@ resource "aws_dynamodb_table" "market_list_table" {
   name         = "${var.project_name}-${var.environment}-market-list"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "PK"
-  range_key    = "SK"  # Alterado de itemId para SK
+  range_key    = "SK"
 
   attribute {
     name = "PK"
@@ -41,7 +41,7 @@ resource "aws_dynamodb_table" "market_list_table" {
   }
 
   attribute {
-    name = "SK"  # Alterado de itemId para SK
+    name = "SK"
     type = "S"
   }
 
@@ -100,7 +100,6 @@ resource "aws_iam_policy" "dynamodb_access_policy" {
   })
 }
 
-# Anexa a política DynamoDB à função Lambda Dois
 resource "aws_iam_role_policy_attachment" "lambda_dois_dynamodb" {
   role       = module.lambda_funcao_dois.role_name
   policy_arn = aws_iam_policy.dynamodb_access_policy.arn
@@ -133,14 +132,12 @@ resource "aws_lambda_function" "lambda_funcao_tres" {
   }
 }
 
-# Criação do arquivo zip para a função Lambda Três
 data "archive_file" "lambda_funcao_tres_code" {
   type        = "zip"
   source_file = local.py_path_tres
   output_path = "${path.module}/lambda_funcao_tres.zip"
 }
 
-# Papel IAM para a função Lambda Três
 resource "aws_iam_role" "lambda_funcao_tres_role" {
   name = "${var.project_name}-${var.environment}-funcao-tres-role"
 
@@ -158,7 +155,6 @@ resource "aws_iam_role" "lambda_funcao_tres_role" {
   })
 }
 
-# Política para permitir logs da função Lambda Três
 resource "aws_iam_policy" "lambda_funcao_tres_logging" {
   name        = "${var.project_name}-${var.environment}-funcao-tres-logging-policy"
   description = "Permite que a função Lambda Três crie logs"
@@ -179,19 +175,16 @@ resource "aws_iam_policy" "lambda_funcao_tres_logging" {
   })
 }
 
-# Vinculação da política de logs à função Lambda Três
 resource "aws_iam_role_policy_attachment" "lambda_funcao_tres_logs" {
   role       = aws_iam_role.lambda_funcao_tres_role.name
   policy_arn = aws_iam_policy.lambda_funcao_tres_logging.arn
 }
 
-# Vinculação da política DynamoDB à função Lambda Três
 resource "aws_iam_role_policy_attachment" "lambda_funcao_tres_dynamodb" {
   role       = aws_iam_role.lambda_funcao_tres_role.name
   policy_arn = aws_iam_policy.dynamodb_access_policy.arn
 }
 
-# Grupo de logs CloudWatch para a função Lambda Três
 resource "aws_cloudwatch_log_group" "lambda_funcao_tres_log_group" {
   name              = "/aws/lambda/${aws_lambda_function.lambda_funcao_tres.function_name}"
   retention_in_days = 14

@@ -1,6 +1,5 @@
 package com.example;
 
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
@@ -35,7 +34,6 @@ public class FuncaoDoisHandler implements RequestHandler<APIGatewayProxyRequestE
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 
         try {
-          
             MarketItem item = objectMapper.readValue(input.getBody(), MarketItem.class);
 
             if (item.getName() == null || item.getName().trim().isEmpty()) {
@@ -110,9 +108,7 @@ public class FuncaoDoisHandler implements RequestHandler<APIGatewayProxyRequestE
         return response;
     }
 
-
-     // Classe para deserializar JSON
-
+    // Classe para deserializar JSON
     public static class MarketItem {
         private String name;
 

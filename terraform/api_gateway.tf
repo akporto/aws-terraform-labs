@@ -16,7 +16,7 @@ resource "aws_api_gateway_method" "add_item_method" {
   rest_api_id   = aws_api_gateway_rest_api.market_list_api.id
   resource_id   = aws_api_gateway_resource.items_resource.id
   http_method   = "POST"
-  authorization = "NONE"  
+  authorization = "NONE"
 }
 
 resource "aws_api_gateway_integration" "add_item_integration" {
@@ -33,7 +33,7 @@ resource "aws_api_gateway_method" "update_item_method" {
   rest_api_id   = aws_api_gateway_rest_api.market_list_api.id
   resource_id   = aws_api_gateway_resource.items_resource.id
   http_method   = "PUT"
-  authorization = "NONE" 
+  authorization = "NONE"
 }
 
 resource "aws_api_gateway_integration" "update_item_integration" {

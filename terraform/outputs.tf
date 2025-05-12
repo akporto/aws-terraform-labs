@@ -50,3 +50,24 @@ output "dynamodb_table_arn" {
   description = "ARN da tabela DynamoDB criada"
   value       = aws_dynamodb_table.market_list_table.arn
 }
+
+# Função Lambda Três
+output "lambda_funcao_tres_name" {
+  description = "Nome da função Lambda Três criada"
+  value       = aws_lambda_function.lambda_funcao_tres.function_name
+}
+
+output "lambda_funcao_tres_arn" {
+  description = "ARN da função Lambda Três criada"
+  value       = aws_lambda_function.lambda_funcao_tres.arn
+}
+
+output "lambda_funcao_tres_role_arn" {
+  description = "ARN da role IAM criada para a função Lambda Três"
+  value       = aws_iam_role.lambda_funcao_tres_role.arn
+}
+
+output "lambda_funcao_tres_invoke_arn" {
+  description = "ARN de invocação da função Lambda Três"
+  value       = aws_lambda_function.lambda_funcao_tres.invoke_arn
+}

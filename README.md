@@ -1,6 +1,40 @@
 # Hello Terraform
 
-Este projeto é um estudo prático utilizando o Terraform para provisionamento de infraestrutura na AWS, incluindo o deploy de funções Lambda escritas em Java. O repositório está organizado por ambientes, facilitando a reutilização de módulos e a separação de contextos.
+Este projeto é um estudo prático utilizando o Terraform para provisionamento de infraestrutura na AWS, incluindo o deploy de funções Lambda escritas em Java. O repositório está organizado por ambientes, com fluxo Git controlado para colaboração segura.
+
+## 🌿 Fluxo de Trabalho Git
+
+### Padrões de Branch
+- `main`: Branch de produção (protegida)
+- `dev`: Branch de desenvolvimento (protegida)
+- `feature/nome-da-feature`: Novas funcionalidades
+- `fix/nome-da-correcao`: Correções de bugs
+- `docs/nome-da-alteracao`: Atualizações de documentação
+
+  
+### Processo de Contribuição
+1. Crie uma branch a partir de dev:
+```bash
+git checkout dev
+git pull origin dev
+git checkout -b feature/minha-feature
+```
+
+### Envie suas alterações:
+
+```bash
+git add .
+git commit -m "Descrição clara das mudanças"
+git push origin feature/minha-feature
+```
+
+### Abra um Pull Request no GitHub:
+
+Target branch: dev
+
+Adicione revisores quando aplicável
+
+Aguarde aprovações 
 
 
 ## 🚀 Pré-requisitos

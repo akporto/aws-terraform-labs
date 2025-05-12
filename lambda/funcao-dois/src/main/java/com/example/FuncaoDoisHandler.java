@@ -52,8 +52,8 @@ public class FuncaoDoisHandler implements RequestHandler<APIGatewayProxyRequestE
 
             // Geração dos identificadores
             String itemId = UUID.randomUUID().toString();
-            String pk = "LIST#" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")); // Prefixo LIST# para compatibilidade
-            String sk = "ITEM#" + itemId; // Padrão de chave para itens
+            String pk = "LIST#" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+            String sk = "ITEM#" + itemId;
 
             // Construção do item para DynamoDB
             Map<String, AttributeValue> itemAttributes = new HashMap<>();
@@ -61,7 +61,7 @@ public class FuncaoDoisHandler implements RequestHandler<APIGatewayProxyRequestE
             itemAttributes.put("SK", new AttributeValue(sk));
             itemAttributes.put("name", new AttributeValue(item.getName()));
             itemAttributes.put("date", new AttributeValue(LocalDate.now().toString()));
-            itemAttributes.put("status", new AttributeValue("TODO")); // Padronizado para maiúsculo
+            itemAttributes.put("status", new AttributeValue("TODO"));
 
             // Log para debug
             context.getLogger().log("Dados do item a ser salvo: " + itemAttributes.toString());
@@ -80,7 +80,7 @@ public class FuncaoDoisHandler implements RequestHandler<APIGatewayProxyRequestE
                     "SK", sk,
                     "name", item.getName(),
                     "date", LocalDate.now().toString(),
-                    "status", "TODO" // Consistente com o valor salvo
+                    "status", "TODO"
             ));
 
             return new APIGatewayProxyResponseEvent()

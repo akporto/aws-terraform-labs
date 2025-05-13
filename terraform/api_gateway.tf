@@ -16,7 +16,7 @@ resource "aws_api_gateway_method" "add_item_method" {
   rest_api_id   = aws_api_gateway_rest_api.market_list_api.id
   resource_id   = aws_api_gateway_resource.items_resource.id
   http_method   = "POST"
-  authorization = "NONE"
+  authorization = "NONE"  
 }
 
 resource "aws_api_gateway_integration" "add_item_integration" {
@@ -33,7 +33,7 @@ resource "aws_api_gateway_method" "update_item_method" {
   rest_api_id   = aws_api_gateway_rest_api.market_list_api.id
   resource_id   = aws_api_gateway_resource.items_resource.id
   http_method   = "PUT"
-  authorization = "NONE"
+  authorization = "NONE" 
 }
 
 resource "aws_api_gateway_integration" "update_item_integration" {
@@ -43,23 +43,6 @@ resource "aws_api_gateway_integration" "update_item_integration" {
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.lambda_funcao_tres.invoke_arn
-}
-
-# Método DELETE para remover item (integração com Lambda Quatro)
-resource "aws_api_gateway_method" "delete_item_method" {
-  rest_api_id   = aws_api_gateway_rest_api.market_list_api.id
-  resource_id   = aws_api_gateway_resource.items_resource.id
-  http_method   = "DELETE"
-  authorization = "NONE"
-}
-
-resource "aws_api_gateway_integration" "delete_item_integration" {
-  rest_api_id             = aws_api_gateway_rest_api.market_list_api.id
-  resource_id             = aws_api_gateway_resource.items_resource.id
-  http_method             = aws_api_gateway_method.delete_item_method.http_method
-  integration_http_method = "POST"
-  type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.lambda_funcao_quatro.invoke_arn
 }
 
 
@@ -81,21 +64,11 @@ resource "aws_lambda_permission" "api_gateway_lambda_tres" {
   source_arn    = "${aws_api_gateway_rest_api.market_list_api.execution_arn}/*/*"
 }
 
-# Permissão para o API Gateway invocar a função Lambda Quatro
-resource "aws_lambda_permission" "api_gateway_lambda_quatro" {
-  statement_id  = "AllowAPIGatewayInvoke"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.lambda_funcao_quatro.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.market_list_api.execution_arn}/*/*"
-}
-
 # Deployment do API Gateway
 resource "aws_api_gateway_deployment" "api_deployment" {
   depends_on = [
     aws_api_gateway_integration.add_item_integration,
-    aws_api_gateway_integration.update_item_integration,
-    aws_api_gateway_integration.delete_item_integration
+    aws_api_gateway_integration.update_item_integration
   ]
 
   rest_api_id = aws_api_gateway_rest_api.market_list_api.id

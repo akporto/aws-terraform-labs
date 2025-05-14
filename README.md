@@ -2,7 +2,7 @@
 
 Este projeto é um estudo prático utilizando o Terraform para provisionamento de infraestrutura na AWS, implementando uma API para gerenciar listas de compras de mercado. A infraestrutura inclui funções Lambda (em Java e Python), API Gateway e DynamoDB.
 
-## 🌿 Fluxo de Trabalho Git
+##  Fluxo de Trabalho Git
 
 ### Padrões de Branch
 * `main`: Branch de produção (protegida)
@@ -38,7 +38,7 @@ Aguarde aprovações
 
 
 
-🚀## Pré-requisitos
+## Pré-requisitos
 Antes de iniciar, você precisa ter instalado:
 
 Terraform v1.0.0 ou superior
@@ -48,24 +48,6 @@ Python 3.9 (para funções Lambda em Python)
 Maven (para compilação dos projetos Java)
 Git
 
-## Estrutura do Projeto
-O projeto está dividido em várias partes
-
-.
-├── lambda/
-│   ├── funcao-um/     # Lambda Java - Hello Terraform
-│   ├── funcao-dois/   # Lambda Java - Adicionar item à lista
-│   ├── funcao-tres/   # Lambda Python - Atualizar item na lista
-│   └── funcao-quatro/ # Lambda Python - Remover item da lista
-└── terraform/
-├── modules/       # Módulos reutilizáveis do Terraform
-│   └── lambda/    # Módulo para criar funções Lambda
-├── environments/  # Configurações específicas de ambiente
-│   ├── dev/       # Ambiente de desenvolvimento
-│   └── prod/      # Ambiente de produção
-├── main.tf        # Definição principal de recursos
-├── variables.tf   # Variáveis do projeto
-└── outputs.tf     # Saídas após aplicação do Terraform
 
 ## Componentes do Sistema
 1. Funções Lambda
@@ -113,14 +95,15 @@ cd terraform-estudo01
    cd terraform/environments/dev
    cp terraform.tfvars.example terraform.tfvars
    ```
-# Edite o arquivo terraform.tfvars com seus próprios valores
+ Edite o arquivo terraform.tfvars com seus próprios valores
 
 4. Configure o backend remoto 
   ``` bash
    cp backend.tf.example backend.tf
    ```
 
-# Edite o arquivo backend.tf com as configurações do seu bucket S3
+ Edite o arquivo backend.tf com as configurações do seu bucket S3
+ 
 5. Inicialize e aplique a infraestrutura
    ```bash
    cd ../../
@@ -129,7 +112,7 @@ cd terraform-estudo01
    terraform apply -var-file=environments/dev/terraform.tfvars
    ```
 
-📁## Explicação dos Arquivos de Configuração Terraform
+## Explicação dos Arquivos de Configuração Terraform
 
 Módulos
 O projeto utiliza um módulo reutilizável para criar funções Lambda, localizado em modules/lambda/. Esse módulo encapsula toda a configuração necessária para criar uma função Lambda padrão, incluindo:
@@ -223,4 +206,4 @@ Todas as permissões seguem o princípio do menor privilégio
 As variáveis de ambiente sensíveis são gerenciadas pelo Terraform
 Os recursos têm tags para fácil identificação e gerenciamento
 
-📜
+

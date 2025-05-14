@@ -2,7 +2,7 @@
 
 Este projeto é um estudo prático utilizando o Terraform para provisionamento de infraestrutura na AWS, implementando uma API para gerenciar listas de compras de mercado. A infraestrutura inclui funções Lambda (em Java e Python), API Gateway e DynamoDB.
 
-## 🌿 Fluxo de Trabalho Git
+##  Fluxo de Trabalho Git
 
 ### Padrões de Branch
 * `main`: Branch de produção (protegida)
@@ -38,7 +38,7 @@ Aguarde aprovações
 
 
 
-🚀## Pré-requisitos
+## Pré-requisitos
 Antes de iniciar, você precisa ter instalado:
 
 Terraform v1.0.0 ou superior
@@ -112,7 +112,7 @@ cd terraform-estudo01
    terraform apply -var-file=environments/dev/terraform.tfvars
    ```
 
-📁## Explicação dos Arquivos de Configuração Terraform
+## Explicação dos Arquivos de Configuração Terraform
 
 Módulos
 O projeto utiliza um módulo reutilizável para criar funções Lambda, localizado em modules/lambda/. Esse módulo encapsula toda a configuração necessária para criar uma função Lambda padrão, incluindo:
@@ -206,4 +206,4 @@ Todas as permissões seguem o princípio do menor privilégio
 As variáveis de ambiente sensíveis são gerenciadas pelo Terraform
 Os recursos têm tags para fácil identificação e gerenciamento
 
-📜
+

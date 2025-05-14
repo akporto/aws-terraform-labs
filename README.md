@@ -156,6 +156,7 @@ Políticas IAM para acesso ao DynamoDB
 
 🌐 api_gateway.tf
 Define o API Gateway REST com endpoints para operações CRUD na lista de mercado, integrando-os com as funções Lambda.
+
 🧪 Testando a API
 Após o deploy, você pode testar a API usando curl ou ferramentas como Postman:
 
@@ -182,7 +183,7 @@ https://seu-api-gateway-url/dev/items \
 -H 'Content-Type: application/json' \
 -d '{"pk": "20250514", "itemId": "abc123"}'
 ```
-🧹 
+
 ## Limpeza dos Recursos
 
 Para destruir toda a infraestrutura criada:

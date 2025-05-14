@@ -48,24 +48,6 @@ Python 3.9 (para funções Lambda em Python)
 Maven (para compilação dos projetos Java)
 Git
 
-## Estrutura do Projeto
-O projeto está dividido em várias partes
-
-.
-├── lambda/
-│   ├── funcao-um/     # Lambda Java - Hello Terraform
-│   ├── funcao-dois/   # Lambda Java - Adicionar item à lista
-│   ├── funcao-tres/   # Lambda Python - Atualizar item na lista
-│   └── funcao-quatro/ # Lambda Python - Remover item da lista
-└── terraform/
-├── modules/       # Módulos reutilizáveis do Terraform
-│   └── lambda/    # Módulo para criar funções Lambda
-├── environments/  # Configurações específicas de ambiente
-│   ├── dev/       # Ambiente de desenvolvimento
-│   └── prod/      # Ambiente de produção
-├── main.tf        # Definição principal de recursos
-├── variables.tf   # Variáveis do projeto
-└── outputs.tf     # Saídas após aplicação do Terraform
 
 ## Componentes do Sistema
 1. Funções Lambda

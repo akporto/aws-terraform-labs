@@ -95,14 +95,15 @@ cd terraform-estudo01
    cd terraform/environments/dev
    cp terraform.tfvars.example terraform.tfvars
    ```
-# Edite o arquivo terraform.tfvars com seus próprios valores
+ Edite o arquivo terraform.tfvars com seus próprios valores
 
 4. Configure o backend remoto 
   ``` bash
    cp backend.tf.example backend.tf
    ```
 
-# Edite o arquivo backend.tf com as configurações do seu bucket S3
+ Edite o arquivo backend.tf com as configurações do seu bucket S3
+ 
 5. Inicialize e aplique a infraestrutura
    ```bash
    cd ../../

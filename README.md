@@ -1,4 +1,4 @@
-# Hello Terraform - Lista de Mercado
+# Hello Terraform 
 
 Este projeto é um estudo prático utilizando o Terraform para provisionamento de infraestrutura na AWS, implementando uma API para gerenciar listas de compras de mercado. A infraestrutura inclui funções Lambda (em Java e Python), API Gateway e DynamoDB.
 

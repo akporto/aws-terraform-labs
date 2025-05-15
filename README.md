@@ -1,4 +1,4 @@
-# Hello Terraform - Lista de Mercado
+# Hello Terraform
 
 Este projeto é um estudo prático utilizando o Terraform para provisionamento de infraestrutura na AWS, implementando uma API para gerenciar listas de compras de mercado. A infraestrutura inclui funções Lambda (em Java e Python), API Gateway e DynamoDB.
 
@@ -87,7 +87,7 @@ cd terraform-estudo01
    mvn clean package
    cd ../../
    ```
-   
+
    Isso gerará os arquivos .jar dentro de target/, que serão usados pelo Terraform para criar as funções Lambda.
 
 3. Configure as variáveis do ambiente
@@ -95,15 +95,15 @@ cd terraform-estudo01
    cd terraform/environments/dev
    cp terraform.tfvars.example terraform.tfvars
    ```
- Edite o arquivo terraform.tfvars com seus próprios valores
+Edite o arquivo terraform.tfvars com seus próprios valores
 
-4. Configure o backend remoto 
+4. Configure o backend remoto
   ``` bash
    cp backend.tf.example backend.tf
    ```
 
- Edite o arquivo backend.tf com as configurações do seu bucket S3
- 
+Edite o arquivo backend.tf com as configurações do seu bucket S3
+
 5. Inicialize e aplique a infraestrutura
    ```bash
    cd ../../
@@ -156,7 +156,6 @@ Políticas IAM para acesso ao DynamoDB
 
 🌐 api_gateway.tf
 Define o API Gateway REST com endpoints para operações CRUD na lista de mercado, integrando-os com as funções Lambda.
-
 🧪 Testando a API
 Após o deploy, você pode testar a API usando curl ou ferramentas como Postman:
 
@@ -183,7 +182,7 @@ https://seu-api-gateway-url/dev/items \
 -H 'Content-Type: application/json' \
 -d '{"pk": "20250514", "itemId": "abc123"}'
 ```
-
+🧹
 ## Limpeza dos Recursos
 
 Para destruir toda a infraestrutura criada:

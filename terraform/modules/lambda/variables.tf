@@ -4,7 +4,7 @@ variable "function_name" {
   type        = string
 }
 
-# Descrição textual da função Lambda
+
 variable "description" {
   description = "Descrição da função Lambda"
   type        = string
@@ -13,7 +13,7 @@ variable "description" {
 
 # Ponto de entrada da função Lambda (classe principal)
 variable "handler" {
-  description = "Handler da função Lambda (exemplo: com.example.FuncaoUmHandler)"
+  description = "Handler da função Lambda (exemplo: index.handler)"
   type        = string
 }
 
@@ -21,7 +21,7 @@ variable "handler" {
 variable "runtime" {
   description = "Runtime da função Lambda"
   type        = string
-  default     = "java11"
+  default     = "python3.9"
 }
 
 # Tempo máximo de execução da função em segundos
@@ -40,7 +40,7 @@ variable "memory_size" {
 
 # Caminho para o arquivo JAR da função Lambda
 variable "artifact_path" {
-  description = "Caminho para o arquivo JAR da função Lambda"
+  description = "Caminho para o arquivo da função Lambda"
   type        = string
 }
 

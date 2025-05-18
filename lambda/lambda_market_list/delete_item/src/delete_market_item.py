@@ -1,18 +1,18 @@
 import json
 import os
 import boto3
-from datetime import datetime
+
 
 dynamodb = boto3.resource('dynamodb')
+TABLE_NAME = os.environ['DYNAMODB_TABLE_NAME']
+table = dynamodb.Table(TABLE_NAME)
 
 def lambda_handler(event, context):
     print("Processando requisição para remover item")
 
-    table_name = os.environ['DYNAMODB_TABLE_NAME']
-    table = dynamodb.Table(table_name)
 
     try:
-        # Verificar se o corpo da requisição existe
+        # Verifica se o corpo da requisição existe
         if not event.get('body'):
             return {
                 'statusCode': 400,
@@ -22,7 +22,7 @@ def lambda_handler(event, context):
 
         body = json.loads(event['body'])
 
-        # Validar campos obrigatórios
+        # Valida campos obrigatórios
         if not all(key in body for key in ['pk', 'itemId']):
             return {
                 'statusCode': 400,
@@ -34,19 +34,19 @@ def lambda_handler(event, context):
         formatted_pk = f"LIST#{body['pk']}"
         formatted_sk = f"ITEM#{body['itemId']}"
 
-        # Verificar se o item existe
+        
         existing_item = table.get_item(Key={'PK': formatted_pk, 'SK': formatted_sk}).get('Item')
 
-        # Remover o item
+        # Remove o item
         response = table.delete_item(
             Key={
                 'PK': formatted_pk,
                 'SK': formatted_sk
             },
-            ReturnValues='ALL_OLD'  # Retorna o item que foi excluído
+            ReturnValues='ALL_OLD'  
         )
 
-        # Verificar se o item foi encontrado e excluído
+        # Verifica se o item foi encontrado e excluído
         deleted_item = response.get('Attributes')
         if not deleted_item:
             return {
@@ -58,8 +58,8 @@ def lambda_handler(event, context):
                 })
             }
 
-        # Retornar confirmação de sucesso com o item excluído
-        return {
+        # Retorna confirmação de sucesso com o item excluído
+        response={
             'statusCode': 200,
             'headers': {'Content-Type': 'application/json'},
             'body': json.dumps({
@@ -68,6 +68,8 @@ def lambda_handler(event, context):
                 'removedItem': deleted_item
             }, ensure_ascii=False)
         }
+        return response
+
 
     except Exception as e:
         print(f"Erro: {str(e)}")

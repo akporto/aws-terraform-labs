@@ -1,43 +1,43 @@
-# Função Lambda Um
-output "lambda_funcao_um_name" {
-  description = "Nome da função Lambda Um criada"
-  value       = module.lambda_funcao_um.function_name
+# Função Lambda Hello Terraform
+output "lambda_hellow_terraform_name" {
+  description = "Nome da função Lambda Hello Terraform criada"
+  value       = module.lambda_hellow_terraform.function_name
 }
 
-output "lambda_funcao_um_arn" {
-  description = "ARN da função Lambda Um criada"
-  value       = module.lambda_funcao_um.function_arn
+output "lambda_hellow_terraform_arn" {
+  description = "ARN da função Lambda Hello Terraform criada"
+  value       = module.lambda_hellow_terraform.function_arn
 }
 
-output "lambda_funcao_um_role_arn" {
-  description = "ARN da role IAM criada para a função Lambda Um"
-  value       = module.lambda_funcao_um.role_arn
+output "lambda_hellow_terraform_role_arn" {
+  description = "ARN da role IAM criada para a função Lambda Hello Terraform"
+  value       = module.lambda_hellow_terraform.role_arn
 }
 
-output "lambda_funcao_um_invoke_arn" {
-  description = "ARN de invocação da função Lambda Um"
-  value       = module.lambda_funcao_um.invoke_arn
+output "lambda_hellow_terraform_invoke_arn" {
+  description = "ARN de invocação da função Lambda Hello Terraform"
+  value       = module.lambda_hellow_terraform.invoke_arn
 }
 
-# Função Lambda Dois
-output "lambda_funcao_dois_name" {
-  description = "Nome da função Lambda Dois criada"
-  value       = module.lambda_funcao_dois.function_name
+# Função Lambda Add Item
+output "lambda_add_item_name" {
+  description = "Nome da função Lambda Add Item criada"
+  value       = module.lambda_add_item.function_name
 }
 
-output "lambda_funcao_dois_arn" {
-  description = "ARN da função Lambda Dois criada"
-  value       = module.lambda_funcao_dois.function_arn
+output "lambda_add_item_arn" {
+  description = "ARN da função Lambda Add Item criada"
+  value       = module.lambda_add_item.function_arn
 }
 
-output "lambda_funcao_dois_role_arn" {
-  description = "ARN da role IAM criada para a função Lambda Dois"
-  value       = module.lambda_funcao_dois.role_arn
+output "lambda_add_item_role_arn" {
+  description = "ARN da role IAM criada para a função Lambda Add Item"
+  value       = module.lambda_add_item.role_arn
 }
 
-output "lambda_funcao_dois_invoke_arn" {
-  description = "ARN de invocação da função Lambda Dois"
-  value       = module.lambda_funcao_dois.invoke_arn
+output "lambda_add_item_invoke_arn" {
+  description = "ARN de invocação da função Lambda Add Item"
+  value       = module.lambda_add_item.invoke_arn
 }
 
 # Tabela DynamoDB
@@ -51,44 +51,44 @@ output "dynamodb_table_arn" {
   value       = aws_dynamodb_table.market_list_table.arn
 }
 
-# Função Lambda Três
-output "lambda_funcao_tres_name" {
-  description = "Nome da função Lambda Três criada"
-  value       = aws_lambda_function.lambda_funcao_tres.function_name
+# Função Lambda Update Item
+output "lambda_update_item_name" {
+  description = "Nome da função Lambda Update Item criada"
+  value       = aws_lambda_function.lambda_update_item.function_name
 }
 
-output "lambda_funcao_tres_arn" {
-  description = "ARN da função Lambda Três criada"
-  value       = aws_lambda_function.lambda_funcao_tres.arn
+output "lambda_update_item_arn" {
+  description = "ARN da função Lambda Update Item criada"
+  value       = aws_lambda_function.lambda_update_item.arn
 }
 
-output "lambda_funcao_tres_role_arn" {
-  description = "ARN da role IAM criada para a função Lambda Três"
-  value       = aws_iam_role.lambda_funcao_tres_role.arn
+output "lambda_update_item_role_arn" {
+  description = "ARN da role IAM criada para a função Lambda Update Item"
+  value       = aws_iam_role.lambda_update_item_role.arn
 }
 
-output "lambda_funcao_tres_invoke_arn" {
-  description = "ARN de invocação da função Lambda Três"
-  value       = aws_lambda_function.lambda_funcao_tres.invoke_arn
+output "lambda_update_item_invoke_arn" {
+  description = "ARN de invocação da função Lambda Update Item"
+  value       = aws_lambda_function.lambda_update_item.invoke_arn
 }
 
-# Função Lambda Quatro
-output "lambda_funcao_quatro_name" {
-  description = "Nome da função Lambda Quatro criada"
-  value       = aws_lambda_function.lambda_funcao_quatro.function_name
+# Função Lambda Delete Item
+output "lambda_delete_item_name" {
+  description = "Nome da função Lambda Delete Item criada"
+  value       = aws_lambda_function.lambda_delete_item.function_name
 }
 
-output "lambda_funcao_quatro_arn" {
-  description = "ARN da função Lambda Quatro criada"
-  value       = aws_lambda_function.lambda_funcao_quatro.arn
+output "lambda_delete_item_arn" {
+  description = "ARN da função Lambda Delete Item criada"
+  value       = aws_lambda_function.lambda_delete_item.arn
 }
 
-output "lambda_funcao_quatro_role_arn" {
-  description = "ARN da role IAM criada para a função Lambda Quatro"
-  value       = aws_iam_role.lambda_funcao_quatro_role.arn
+output "lambda_delete_item_role_arn" {
+  description = "ARN da role IAM criada para a função Lambda Delete Item"
+  value       = aws_iam_role.lambda_delete_item_role.arn
 }
 
-output "lambda_funcao_quatro_invoke_arn" {
-  description = "ARN de invocação da função Lambda Quatro"
-  value       = aws_lambda_function.lambda_funcao_quatro.invoke_arn
+output "lambda_delete_item_invoke_arn" {
+  description = "ARN de invocação da função Lambda Delete Item"
+  value       = aws_lambda_function.lambda_delete_item.invoke_arn
 }

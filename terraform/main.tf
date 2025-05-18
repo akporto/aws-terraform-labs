@@ -1,22 +1,22 @@
 locals {
-  jar_path_um    = "${path.module}/../lambda/funcao-um/target/funcao-um-1.0.0.jar"
-  jar_path_dois  = "${path.module}/../lambda/funcao-dois/target/funcao-dois-1.0.0.jar"
-  py_path_tres   = "${path.module}/../lambda/funcao-tres/src/FuncaoTresHandler.py"
-  py_path_quatro = "${path.module}/../lambda/funcao-quatro/src/FuncaoQuatroHandler.py"
+  py_path_lambda_hellow_terraform = "${path.module}/../lambda/lambda_hellow_terraform/src/hellow_terraform.py"
+  py_path_add_item               = "${path.module}/../lambda/lambda_market_list/add_item/src/add_market_item.py"
+  py_path_update_item            = "${path.module}/../lambda/lambda_market_list/update_item/src/update_market_item.py"
+  py_path_delete_item            = "${path.module}/../lambda/lambda_market_list/delete_item/src/delete_market_item.py"
 }
 
-# Função Lambda Um
-module "lambda_funcao_um" {
+# Função Lambda Hellow Terraform
+module "lambda_hellow_terraform" {
   source = "./modules/lambda"
 
-  function_name = "${var.project_name}-${var.environment}-funcao-um"
+  function_name = "${var.project_name}-${var.environment}-lambda-hellow-terraform"
   description   = "Função Lambda que retorna 'Hello Terraform'"
-  handler       = "com.example.FuncaoUmHandler::handleRequest"
-  runtime       = "java11"
+  handler       = "hellow_terraform.lambda_handler"
+  runtime       = "python3.9"
   timeout       = 30
   memory_size   = 512
 
-  artifact_path = local.jar_path_um
+  artifact_path = local.py_path_lambda_hellow_terraform
 
   environment_variables = {
     ENVIRONMENT = var.environment
@@ -53,18 +53,18 @@ resource "aws_dynamodb_table" "market_list_table" {
   }
 }
 
-# Função Lambda Dois
-module "lambda_funcao_dois" {
+# Função Lambda Add Item
+module "lambda_add_item" {
   source = "./modules/lambda"
 
-  function_name = "${var.project_name}-${var.environment}-funcao-dois"
+  function_name = "${var.project_name}-${var.environment}-lambda-add-item"
   description   = "Função Lambda para adicionar itens à lista de mercado"
-  handler       = "com.example.FuncaoDoisHandler::handleRequest"
-  runtime       = "java11"
+  handler       = "add_market_item.lambda_handler"
+  runtime       = "python3.9"
   timeout       = 30
   memory_size   = 512
 
-  artifact_path = local.jar_path_dois
+  artifact_path = local.py_path_add_item
 
   environment_variables = {
     ENVIRONMENT         = var.environment
@@ -78,7 +78,7 @@ module "lambda_funcao_dois" {
   }
 }
 
-# Política adicional para a função Lambda Dois acessar o DynamoDB
+# Política adicional para a função Lambda Add Item acessar o DynamoDB
 resource "aws_iam_policy" "dynamodb_access_policy" {
   name        = "${var.project_name}-${var.environment}-lambda-dynamodb-policy"
   description = "Permite que as funções Lambda acessem a tabela DynamoDB"
@@ -102,23 +102,23 @@ resource "aws_iam_policy" "dynamodb_access_policy" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_dois_dynamodb" {
-  role       = module.lambda_funcao_dois.role_name
+resource "aws_iam_role_policy_attachment" "lambda_add_item_dynamodb" {
+  role       = module.lambda_add_item.role_name
   policy_arn = aws_iam_policy.dynamodb_access_policy.arn
 }
 
-# Função Lambda Três (Python)
-resource "aws_lambda_function" "lambda_funcao_tres" {
-  function_name = "${var.project_name}-${var.environment}-funcao-tres"
+# Função Lambda update Item
+resource "aws_lambda_function" "lambda_update_item" {
+  function_name = "${var.project_name}-${var.environment}-lambda-update-item"
   description   = "Função Lambda para atualizar itens na lista de mercado"
-  role          = aws_iam_role.lambda_funcao_tres_role.arn
-  handler       = "FuncaoTresHandler.lambda_handler"
+  role          = aws_iam_role.lambda_update_item_role.arn
+  handler       = "update_market_item.lambda_handler"
   runtime       = "python3.9"
   timeout       = 30
   memory_size   = 512
 
-  filename         = "${path.module}/lambda_funcao_tres.zip"
-  source_code_hash = data.archive_file.lambda_funcao_tres_code.output_base64sha256
+  filename         = "${path.module}/lambda_update_item.zip"
+  source_code_hash = data.archive_file.lambda_update_item_code.output_base64sha256
 
   environment {
     variables = {
@@ -134,14 +134,14 @@ resource "aws_lambda_function" "lambda_funcao_tres" {
   }
 }
 
-data "archive_file" "lambda_funcao_tres_code" {
+data "archive_file" "lambda_update_item_code" {
   type        = "zip"
-  source_file = local.py_path_tres
-  output_path = "${path.module}/lambda_funcao_tres.zip"
+  source_file = local.py_path_update_item
+  output_path = "${path.module}/lambda_update_item.zip"
 }
 
-resource "aws_iam_role" "lambda_funcao_tres_role" {
-  name = "${var.project_name}-${var.environment}-funcao-tres-role"
+resource "aws_iam_role" "lambda_update_item_role" {
+  name = "${var.project_name}-${var.environment}-lambda-update-item-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -157,9 +157,9 @@ resource "aws_iam_role" "lambda_funcao_tres_role" {
   })
 }
 
-resource "aws_iam_policy" "lambda_funcao_tres_logging" {
-  name        = "${var.project_name}-${var.environment}-funcao-tres-logging-policy"
-  description = "Permite que a função Lambda Três crie logs"
+resource "aws_iam_policy" "lambda_update_item_logging" {
+  name        = "${var.project_name}-${var.environment}-lambda-update-item-logging-policy"
+  description = "Permite que a função Lambda Update crie logs"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -177,33 +177,33 @@ resource "aws_iam_policy" "lambda_funcao_tres_logging" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_funcao_tres_logs" {
-  role       = aws_iam_role.lambda_funcao_tres_role.name
-  policy_arn = aws_iam_policy.lambda_funcao_tres_logging.arn
+resource "aws_iam_role_policy_attachment" "lambda_update_item_logs" {
+  role       = aws_iam_role.lambda_update_item_role.name
+  policy_arn = aws_iam_policy.lambda_update_item_logging.arn
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_funcao_tres_dynamodb" {
-  role       = aws_iam_role.lambda_funcao_tres_role.name
+resource "aws_iam_role_policy_attachment" "lambda_update_item_dynamodb" {
+  role       = aws_iam_role.lambda_update_item_role.name
   policy_arn = aws_iam_policy.dynamodb_access_policy.arn
 }
 
-resource "aws_cloudwatch_log_group" "lambda_funcao_tres_log_group" {
-  name              = "/aws/lambda/${aws_lambda_function.lambda_funcao_tres.function_name}"
+resource "aws_cloudwatch_log_group" "lambda_update_item_log_group" {
+  name              = "/aws/lambda/${aws_lambda_function.lambda_update_item.function_name}"
   retention_in_days = 14
 }
 
-# Função Lambda Quatro (Python) - Para remover itens
-resource "aws_lambda_function" "lambda_funcao_quatro" {
-  function_name = "${var.project_name}-${var.environment}-funcao-quatro"
+# Função Lambda Delete Item - Para remover itens
+resource "aws_lambda_function" "lambda_delete_item" {
+  function_name = "${var.project_name}-${var.environment}-lambda-delete-item"
   description   = "Função Lambda para remover itens da lista de mercado"
-  role          = aws_iam_role.lambda_funcao_quatro_role.arn
-  handler       = "FuncaoQuatroHandler.lambda_handler"
+  role          = aws_iam_role.lambda_delete_item_role.arn
+  handler       = "delete_market_item.lambda_handler"
   runtime       = "python3.9"
   timeout       = 30
   memory_size   = 512
 
-  filename         = "${path.module}/lambda_funcao_quatro.zip"
-  source_code_hash = data.archive_file.lambda_funcao_quatro_code.output_base64sha256
+  filename         = "${path.module}/lambda_delete_item.zip"
+  source_code_hash = data.archive_file.lambda_delete_item_code.output_base64sha256
 
   environment {
     variables = {
@@ -219,14 +219,14 @@ resource "aws_lambda_function" "lambda_funcao_quatro" {
   }
 }
 
-data "archive_file" "lambda_funcao_quatro_code" {
+data "archive_file" "lambda_delete_item_code" {
   type        = "zip"
-  source_file = local.py_path_quatro
-  output_path = "${path.module}/lambda_funcao_quatro.zip"
+  source_file = local.py_path_delete_item
+  output_path = "${path.module}/lambda_delete_item.zip"
 }
 
-resource "aws_iam_role" "lambda_funcao_quatro_role" {
-  name = "${var.project_name}-${var.environment}-funcao-quatro-role"
+resource "aws_iam_role" "lambda_delete_item_role" {
+  name = "${var.project_name}-${var.environment}-lambda-delete-item-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -242,9 +242,9 @@ resource "aws_iam_role" "lambda_funcao_quatro_role" {
   })
 }
 
-resource "aws_iam_policy" "lambda_funcao_quatro_logging" {
-  name        = "${var.project_name}-${var.environment}-funcao-quatro-logging-policy"
-  description = "Permite que a função Lambda Quatro crie logs"
+resource "aws_iam_policy" "lambda_delete_item_logging" {
+  name        = "${var.project_name}-${var.environment}-lambda-delete-item-logging-policy"
+  description = "Permite que a função Lambda Delete Item crie logs"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -262,17 +262,17 @@ resource "aws_iam_policy" "lambda_funcao_quatro_logging" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_funcao_quatro_logs" {
-  role       = aws_iam_role.lambda_funcao_quatro_role.name
-  policy_arn = aws_iam_policy.lambda_funcao_quatro_logging.arn
+resource "aws_iam_role_policy_attachment" "lambda_delete_item_logs" {
+  role       = aws_iam_role.lambda_delete_item_role.name
+  policy_arn = aws_iam_policy.lambda_delete_item_logging.arn
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_funcao_quatro_dynamodb" {
-  role       = aws_iam_role.lambda_funcao_quatro_role.name
+resource "aws_iam_role_policy_attachment" "lambda_delete_item_dynamodb" {
+  role       = aws_iam_role.lambda_delete_item_role.name
   policy_arn = aws_iam_policy.dynamodb_access_policy.arn
 }
 
-resource "aws_cloudwatch_log_group" "lambda_funcao_quatro_log_group" {
-  name              = "/aws/lambda/${aws_lambda_function.lambda_funcao_quatro.function_name}"
+resource "aws_cloudwatch_log_group" "lambda_delete_item_log_group" {
+  name              = "/aws/lambda/${aws_lambda_function.lambda_delete_item.function_name}"
   retention_in_days = 14
 }

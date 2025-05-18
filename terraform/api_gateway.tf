@@ -11,7 +11,7 @@ resource "aws_api_gateway_resource" "items_resource" {
   path_part   = "items"
 }
 
-# Método POST para adicionar item (integração com Lambda Dois)
+# Método POST para adicionar item (integração com Lambda Add Item)
 resource "aws_api_gateway_method" "add_item_method" {
   rest_api_id   = aws_api_gateway_rest_api.market_list_api.id
   resource_id   = aws_api_gateway_resource.items_resource.id
@@ -25,10 +25,10 @@ resource "aws_api_gateway_integration" "add_item_integration" {
   http_method             = aws_api_gateway_method.add_item_method.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = module.lambda_funcao_dois.invoke_arn
+  uri                     = module.lambda_add_item.invoke_arn
 }
 
-# Método PUT para atualizar item (integração com Lambda Três)
+# Método PUT para atualizar item (integração com Lambda Update Item)
 resource "aws_api_gateway_method" "update_item_method" {
   rest_api_id   = aws_api_gateway_rest_api.market_list_api.id
   resource_id   = aws_api_gateway_resource.items_resource.id
@@ -42,10 +42,10 @@ resource "aws_api_gateway_integration" "update_item_integration" {
   http_method             = aws_api_gateway_method.update_item_method.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.lambda_funcao_tres.invoke_arn
+  uri                     = aws_lambda_function.lambda_update_item.invoke_arn
 }
 
-# Método DELETE para remover item (integração com Lambda Quatro)
+# Método DELETE para remover item (integração com Lambda Delete Item)
 resource "aws_api_gateway_method" "delete_item_method" {
   rest_api_id   = aws_api_gateway_rest_api.market_list_api.id
   resource_id   = aws_api_gateway_resource.items_resource.id
@@ -59,33 +59,32 @@ resource "aws_api_gateway_integration" "delete_item_integration" {
   http_method             = aws_api_gateway_method.delete_item_method.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.lambda_funcao_quatro.invoke_arn
+  uri                     = aws_lambda_function.lambda_delete_item.invoke_arn
 }
 
-
-# Permissão para o API Gateway invocar a função Lambda Dois
-resource "aws_lambda_permission" "api_gateway_lambda_dois" {
+# Permissão para o API Gateway invocar a função Lambda Add Item
+resource "aws_lambda_permission" "api_gateway_lambda_add_item" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
-  function_name = module.lambda_funcao_dois.function_name
+  function_name = module.lambda_add_item.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.market_list_api.execution_arn}/*/*"
 }
 
-# Permissão para o API Gateway invocar a função Lambda Três
-resource "aws_lambda_permission" "api_gateway_lambda_tres" {
+# Permissão para o API Gateway invocar a função Lambda Update Item
+resource "aws_lambda_permission" "api_gateway_lambda_update_item" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.lambda_funcao_tres.function_name
+  function_name = aws_lambda_function.lambda_update_item.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.market_list_api.execution_arn}/*/*"
 }
 
-# Permissão para o API Gateway invocar a função Lambda Quatro
-resource "aws_lambda_permission" "api_gateway_lambda_quatro" {
+# Permissão para o API Gateway invocar a função Lambda Delete Item
+resource "aws_lambda_permission" "api_gateway_lambda_delete_item" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.lambda_funcao_quatro.function_name
+  function_name = aws_lambda_function.lambda_delete_item.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.market_list_api.execution_arn}/*/*"
 }
@@ -101,13 +100,12 @@ resource "aws_api_gateway_deployment" "api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.market_list_api.id
 }
 
-# Novo recurso para gerenciar o estágio
+# gerenciar estágio
 resource "aws_api_gateway_stage" "api_stage" {
   stage_name    = var.environment
   rest_api_id   = aws_api_gateway_rest_api.market_list_api.id
   deployment_id = aws_api_gateway_deployment.api_deployment.id
 }
-
 
 # URL do API Gateway
 output "api_url" {

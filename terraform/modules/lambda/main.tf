@@ -43,6 +43,15 @@ resource "aws_iam_role_policy_attachment" "lambda_logs" {
   policy_arn = aws_iam_policy.lambda_logging.arn
 }
 
+
+# Configuração para empacotar o código Python
+data "archive_file" "lambda_zip" {
+  type        = "zip"
+  source_file = var.artifact_path
+  output_path = "${replace(var.artifact_path, ".py", "")}.zip"
+}
+
+
 # Configuração da função Lambda
 resource "aws_lambda_function" "function" {
   function_name = var.function_name
@@ -53,8 +62,8 @@ resource "aws_lambda_function" "function" {
   timeout       = var.timeout
   memory_size   = var.memory_size
 
-  filename         = var.artifact_path
-  source_code_hash = filebase64sha256(var.artifact_path)
+  filename         = data.archive_file.lambda_zip.output_path
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
 
   environment {
     variables = var.environment_variables

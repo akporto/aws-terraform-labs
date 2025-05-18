@@ -1,116 +1,58 @@
-### IDEs e Editores ###
+# Maven
+target/
+*.jar
+*.class
+*.properties
+
 # IntelliJ IDEA
 .idea/
 *.iml
-*.ipr
-*.iws
-
-# Eclipse
-*.project
-*.classpath
-.settings/
 
 # VS Code
 .vscode/
 *.code-workspace
 
+# Eclipse
+*.project
+*.classpath
+
+# Terraform
+terraform.tfstate
+backend.tf
+terraform.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+
+# Node.js
+node_modules/
+
+# PHP Composer
+vendor/
+
 # Sublime Text
 *.sublime-project
 *.sublime-workspace
 
-# Vim/Neovim
-*.swp
+# Arquivos de Backup e Temporários
 *~
-*.un~
-
-### Linguagens e Frameworks ###
-# Java/Maven
-target/
-*.jar
-*.class
-*.war
-*.ear
-*.properties
-
-# Node.js
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# Python
-__pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-venv/
-*.egg-info/
-.venv/
-
-# PHP Composer
-vendor/
-composer.lock
-
-### Terraform ###
-.terraform/
-terraform.tfstate
-terraform.tfstate.backup
-terraform.tfstate.*.backup
-.terraform.lock.hcl
-*.tfvars
-*.tfvars.json
-
-### Sistemas Operacionais ###
-# macOS
-.DS_Store
-._*
-
-# Windows
-Thumbs.db
-Desktop.ini
-
-### Arquivos Temporários e de Backup ###
 *.bak
-*.tmp
-*.temp
 *.orig
-*.rej
-*.swo
+
+# Logs e Relatórios
 *.log
 *.out
-*.pid
-*.seed
-*.pid.lock
 
-### Logs e Relatórios ###
-*.log
-logs/
-*.out
-*.csv
-*.report
-
-### Configuração e Credenciais ###
-.env
-*.env
-.env.local
-.env.development
-.env.test
-.env.production
-*.pem
-*.key
-*.cert
-*.crt
-*.pub
-id_rsa
-id_dsa
-*.pgpass
-*.kdbx
-
-# Git
-.git-credentials
+# Configuração do Git
 .gitconfig
-.gitignore_global
+.git-credentials
 
-### Arquivos ZIP de Deploy (ex: Lambda, Terraform) ###
+# Arquivos Sensíveis
+*.env
+*.pem
+
+# Outros
+*.DS_Store
+*.swp
+
+#Zip
 *.zip

@@ -111,3 +111,6 @@ id_dsa
 .git-credentials
 .gitconfig
 .gitignore_global
+
+### Arquivos ZIP de Deploy (ex: Lambda, Terraform) ###
+*.zip

@@ -1,8 +1,22 @@
+# ================
+# Linguagens/ferramentas
+# ================
+
 # Maven
 target/
 *.jar
 *.class
 *.properties
+
+# Node.js
+node_modules/
+
+# PHP Composer
+vendor/
+
+# ================
+# IDEs/Editores
+# ================
 
 # IntelliJ IDEA
 .idea/
@@ -16,43 +30,56 @@ target/
 *.project
 *.classpath
 
-# Terraform
-terraform.tfstate
-backend.tf
-terraform.tfstate.backup
-.terraform/
-.terraform.lock.hcl
-
-# Node.js
-node_modules/
-
-# PHP Composer
-vendor/
-
 # Sublime Text
 *.sublime-project
 *.sublime-workspace
 
-# Arquivos de Backup e Temporários
+# ================
+# Terraform
+# ================
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfstate.*.backup
+.terraform.lock.hcl
+*.tfplan
+*.tfvars
+crash.log
+
+# ================
+# Arquivos temporários/backup
+# ================
 *~
 *.bak
 *.orig
+*.swp
+*.swo
 
-# Logs e Relatórios
+# ================
+# Logs e relatórios
+# ================
 *.log
 *.out
 
-# Configuração do Git
-.gitconfig
-.git-credentials
-
-# Arquivos Sensíveis
-*.env
-*.pem
-
-# Outros
+# ================
+# Sistemas operacionais
+# ================
 *.DS_Store
-*.swp
+Thumbs.db
 
-#Zip
+# ================
+# Arquivos sensíveis
+# ================
+*.env
+.env*
+*.pem
+*.key
+*.cert
+*.crt
+
+# ================
+# Outros
+# ================
 *.zip
+*.tar
+*.gz

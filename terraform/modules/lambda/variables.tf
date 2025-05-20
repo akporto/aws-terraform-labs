@@ -31,14 +31,14 @@ variable "timeout" {
   default     = 30
 }
 
-# Memória alocada para a função Lambda em MB
+# Memória para a função Lambda em MB
 variable "memory_size" {
   description = "Memória alocada para a função Lambda em MB"
   type        = number
   default     = 512
 }
 
-# Caminho para o arquivo JAR da função Lambda
+
 variable "artifact_path" {
   description = "Caminho para o arquivo da função Lambda"
   type        = string

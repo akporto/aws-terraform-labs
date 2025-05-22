@@ -19,8 +19,6 @@ resource "aws_cognito_user_pool" "user_pool" {
   email_configuration {
     email_sending_account = "COGNITO_DEFAULT"
   }
-
-
   auto_verified_attributes = ["email"]
 
   password_policy {
@@ -122,7 +120,7 @@ resource "aws_iam_policy" "dynamodb_access_policy" {
     Version = "2012-10-17",
     Statement = [
       {
-        Action   = [
+        Action = [
           "dynamodb:PutItem",
           "dynamodb:GetItem",
           "dynamodb:UpdateItem",
@@ -217,11 +215,13 @@ resource "aws_iam_role_policy_attachment" "lambda_delete_item_dynamodb" {
 
 # Módulo API Gateway - passa as ARNs das Lambdas
 module "api_gateway" {
-  source                    = "./modules/api_gateway"
-  project_name              = var.project_name
-  environment               = var.environment
+  source                     = "./modules/api_gateway"
+  project_name               = var.project_name
+  environment                = var.environment
+  lambda_function_get_arn    = module.lambda_hellow_terraform.function_arn
   lambda_function_post_arn   = module.lambda_add_item.function_arn
   lambda_function_put_arn    = module.lambda_update_item.function_arn
   lambda_function_delete_arn = module.lambda_delete_item.function_arn
-  aws_region                = var.aws_region
+  aws_region                 = var.aws_region
+  cognito_user_pool_arn      = aws_cognito_user_pool.user_pool.arn
 }

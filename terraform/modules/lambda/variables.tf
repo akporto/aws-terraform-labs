@@ -4,7 +4,6 @@ variable "function_name" {
   type        = string
 }
 
-
 variable "description" {
   description = "Descrição da função Lambda"
   type        = string

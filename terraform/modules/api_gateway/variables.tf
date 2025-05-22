@@ -27,3 +27,8 @@ variable "aws_region" {
   description = "Região da AWS (ex: sa-east-1)"
   type        = string
 }
+
+variable "lambda_function_get_arn" {
+  description = "ARN da Lambda para GET"
+  type        = string
+}

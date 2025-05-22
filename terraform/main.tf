@@ -19,9 +19,7 @@ resource "aws_cognito_user_pool" "user_pool" {
   email_configuration {
     email_sending_account = "COGNITO_DEFAULT"
   }
-
-
-  auto_verified_attributes = ["email"]
+    auto_verified_attributes = ["email"]
 
   password_policy {
     minimum_length    = 8
@@ -220,6 +218,7 @@ module "api_gateway" {
   source                    = "./modules/api_gateway"
   project_name              = var.project_name
   environment               = var.environment
+  lambda_function_get_arn   = module.lambda_hellow_terraform.function_arn
   lambda_function_post_arn   = module.lambda_add_item.function_arn
   lambda_function_put_arn    = module.lambda_update_item.function_arn
   lambda_function_delete_arn = module.lambda_delete_item.function_arn

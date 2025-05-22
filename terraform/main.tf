@@ -223,4 +223,5 @@ module "api_gateway" {
   lambda_function_put_arn    = module.lambda_update_item.function_arn
   lambda_function_delete_arn = module.lambda_delete_item.function_arn
   aws_region                = var.aws_region
+  cognito_user_pool_arn = aws_cognito_user_pool.user_pool.arn
 }

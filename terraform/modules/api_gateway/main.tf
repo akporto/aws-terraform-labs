@@ -16,10 +16,12 @@ resource "aws_api_gateway_resource" "items_resource" {
 
 # Método GET para retornar na tela: "Lambda function is running!"
 resource "aws_api_gateway_method" "get_hellow_method" {
+  depends_on    = [aws_api_gateway_authorizer.cognito_authorizer]
   rest_api_id   = aws_api_gateway_rest_api.market_list_api.id
   resource_id   = aws_api_gateway_resource.items_resource.id
   http_method   = "GET"
-  authorization = "NONE"
+  authorization = "COGNITO_USER_POOLS"  
+  authorizer_id = aws_api_gateway_authorizer.cognito_authorizer.id 
 }
 
 # Método POST para adicionar itens
@@ -122,9 +124,18 @@ resource "aws_lambda_permission" "api_gateway_lambda_delete_item" {
   source_arn    = "${aws_api_gateway_rest_api.market_list_api.execution_arn}/*/*"
 }
 
+# Criação de um Authorizer no Api Gateway
+resource "aws_api_gateway_authorizer" "cognito_authorizer" {
+  name          = "${var.project_name}-${var.environment}-cognito-authorizer"
+  rest_api_id   = aws_api_gateway_rest_api.market_list_api.id
+  type          = "COGNITO_USER_POOLS"
+  provider_arns = [var.cognito_user_pool_arn]  # Adicione esta variável no variables.tf
+}
+
 # Deployment da API Gateway
 resource "aws_api_gateway_deployment" "deployment" {
   depends_on = [
+    aws_api_gateway_integration.get_hellow_terraform,
     aws_api_gateway_integration.add_item_integration,
     aws_api_gateway_integration.update_item_integration,
     aws_api_gateway_integration.delete_item_integration,

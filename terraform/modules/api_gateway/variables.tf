@@ -32,3 +32,8 @@ variable "lambda_function_get_arn" {
   description = "ARN da Lambda para GET"
   type        = string
 }
+
+variable "cognito_user_pool_arn" {
+  description = "ARN do Cognito User Pool"
+  type = string
+}

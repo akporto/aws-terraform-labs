@@ -35,5 +35,5 @@ variable "lambda_function_get_arn" {
 
 variable "cognito_user_pool_arn" {
   description = "ARN do Cognito User Pool"
-  type = string
+  type        = string
 }

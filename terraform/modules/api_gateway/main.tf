@@ -129,7 +129,7 @@ resource "aws_api_gateway_authorizer" "cognito_authorizer" {
   name          = "${var.project_name}-${var.environment}-cognito-authorizer"
   rest_api_id   = aws_api_gateway_rest_api.market_list_api.id
   type          = "COGNITO_USER_POOLS"
-  provider_arns = [var.cognito_user_pool_arn] 
+  provider_arns = [var.cognito_user_pool_arn]
 }
 
 # Deployment da API Gateway

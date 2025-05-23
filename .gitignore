@@ -83,3 +83,4 @@ Thumbs.db
 *.zip
 *.tar
 *.gz
+terraform.auto.tfvars

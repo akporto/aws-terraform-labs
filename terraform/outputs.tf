@@ -98,3 +98,24 @@ output "api_url" {
   description = "URL for invoking the API Gateway"
   value       = "${module.api_gateway.api_gateway_invoke_url}/items"
 }
+
+# Lambda get items
+output "lambda_get_items_name" {
+  description = "Nome da função Lambda Get Items criada"
+  value       = module.lambda_get_items.function_name
+}
+
+output "lambda_get_items_arn" {
+  description = "ARN da função Lambda Get Items criada"
+  value       = module.lambda_get_items.function_arn
+}
+
+output "lambda_get_items_role_arn" {
+  description = "ARN da role IAM criada para a função Lambda Get Items"
+  value       = module.lambda_get_items.role_arn
+}
+
+output "lambda_get_items_invoke_arn" {
+  description = "ARN de invocação da função Lambda Get Items"
+  value       = module.lambda_get_items.invoke_arn
+}

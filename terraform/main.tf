@@ -213,6 +213,32 @@ resource "aws_iam_role_policy_attachment" "lambda_delete_item_dynamodb" {
   policy_arn = aws_iam_policy.dynamodb_access_policy.arn
 }
 
+# Lambda get item
+module "lambda_get_items" {
+  source        = "./modules/lambda"
+  function_name = "${var.project_name}-${var.environment}-get-items"
+  description   = "Função para obter itens da lista de mercado"
+  handler       = "get_items.lambda_handler"
+  runtime       = "python3.12"
+  timeout       = 10
+  memory_size   = 128
+  artifact_path = "${path.module}/../lambda/lambda_market_list/get_items/src/get_items.py"
+
+  environment_variables = {
+    DYNAMODB_TABLE_NAME = aws_dynamodb_table.market_list_table.name
+  }
+
+  tags = {
+    Projeto  = var.project_name
+    Ambiente = var.environment
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_get_items_dynamodb" {
+  role       = module.lambda_get_items.role_name
+  policy_arn = aws_iam_policy.dynamodb_access_policy.arn
+}
+
 # Módulo API Gateway - passa as ARNs das Lambdas
 module "api_gateway" {
   source                     = "./modules/api_gateway"
@@ -222,6 +248,7 @@ module "api_gateway" {
   lambda_function_post_arn   = module.lambda_add_item.function_arn
   lambda_function_put_arn    = module.lambda_update_item.function_arn
   lambda_function_delete_arn = module.lambda_delete_item.function_arn
+  lambda_function_get_arn    = module.lambda_get_items.function_arn
   aws_region                 = var.aws_region
   cognito_user_pool_arn      = aws_cognito_user_pool.user_pool.arn
 }

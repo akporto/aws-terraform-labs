@@ -150,3 +150,12 @@ resource "aws_api_gateway_stage" "stage" {
   deployment_id = aws_api_gateway_deployment.deployment.id
   stage_name    = var.environment
 }
+
+# Permissão para invocar a lambda GET
+resource "aws_lambda_permission" "api_gateway_lambda_get_item" {
+  statement_id  = "AllowAPIGatewayInvokeGet"
+  action        = "lambda:InvokeFunction"
+  function_name = var.lambda_function_get_arn
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.market_list_api.execution_arn}/*/*"
+}

@@ -1,8 +1,9 @@
 locals {
-  py_path_lambda_hellow_terraform = "${path.module}/../lambda/lambda_hellow_terraform/src/hellow_terraform.py"
-  py_path_add_item                = "${path.module}/../lambda/lambda_market_list/add_item/src/add_market_item.py"
-  py_path_update_item             = "${path.module}/../lambda/lambda_market_list/update_item/src/update_market_item.py"
-  py_path_delete_item             = "${path.module}/../lambda/lambda_market_list/delete_item/src/delete_market_item.py"
+  py_path_lambda_hellow_terraform = "${path.module}/../lambdas/lambda_hellow_terraform/src/hellow_terraform.py"
+  py_path_add_item                = "${path.module}/../lambdas/lambda_market_list/add_item/src/add_market_item.py"
+  py_path_update_item             = "${path.module}/../lambdas/lambda_market_list/update_item/src/update_market_item.py"
+  py_path_delete_item             = "${path.module}/../lambdas/lambda_market_list/delete_item/src/delete_market_item.py"
+  py_path_get_item                = "${path.module}/../lambdas/lambda_market_list/get_item/src/get_market_item.py"
 }
 
 # Recurso Cognito User Pool
@@ -76,7 +77,7 @@ module "lambda_hellow_terraform" {
   runtime       = "python3.9"
   timeout       = 30
   memory_size   = 512
-  artifact_path = local.py_path_lambda_hellow_terraform
+  artifact_path = "${path.module}/../lambdas/lambda_hellow_terraform/hellow_terraform.py"
   environment_variables = {
     ENVIRONMENT = var.environment
   }
@@ -144,7 +145,7 @@ module "lambda_add_item" {
   runtime       = "python3.9"
   timeout       = 30
   memory_size   = 512
-  artifact_path = local.py_path_add_item
+  artifact_path = "${path.module}/../lambdas/lambda_market_list/add_items/src/add_items.py"
   environment_variables = {
     ENVIRONMENT         = var.environment
     DYNAMODB_TABLE_NAME = aws_dynamodb_table.market_list_table.name
@@ -170,7 +171,7 @@ module "lambda_update_item" {
   runtime       = "python3.9"
   timeout       = 30
   memory_size   = 512
-  artifact_path = local.py_path_update_item
+  artifact_path = "${path.module}/../lambdas/lambda_market_list/update_item/src/update_item.py"
   environment_variables = {
     ENVIRONMENT         = var.environment
     DYNAMODB_TABLE_NAME = aws_dynamodb_table.market_list_table.name
@@ -196,7 +197,7 @@ module "lambda_delete_item" {
   runtime       = "python3.9"
   timeout       = 30
   memory_size   = 512
-  artifact_path = local.py_path_delete_item
+  artifact_path = "${path.module}/../lambdas/lambda_market_list/delete_item/src/delete_item.py"
   environment_variables = {
     ENVIRONMENT         = var.environment
     DYNAMODB_TABLE_NAME = aws_dynamodb_table.market_list_table.name
@@ -222,7 +223,7 @@ module "lambda_get_items" {
   runtime       = "python3.12"
   timeout       = 10
   memory_size   = 128
-  artifact_path = "${path.module}/../lambda/lambda_market_list/get_items/src/get_items.py"
+  artifact_path = "${path.module}/../lambdas/lambda_market_list/get_items/src/get_items.py"
 
   environment_variables = {
     DYNAMODB_TABLE_NAME = aws_dynamodb_table.market_list_table.name
@@ -241,14 +242,14 @@ resource "aws_iam_role_policy_attachment" "lambda_get_items_dynamodb" {
 
 # Módulo API Gateway - passa as ARNs das Lambdas
 module "api_gateway" {
-  source                     = "./modules/api_gateway"
-  project_name               = var.project_name
-  environment                = var.environment
-  lambda_function_get_arn    = module.lambda_hellow_terraform.function_arn
-  lambda_function_post_arn   = module.lambda_add_item.function_arn
-  lambda_function_put_arn    = module.lambda_update_item.function_arn
-  lambda_function_delete_arn = module.lambda_delete_item.function_arn
-  lambda_function_get_arn    = module.lambda_get_items.function_arn
-  aws_region                 = var.aws_region
-  cognito_user_pool_arn      = aws_cognito_user_pool.user_pool.arn
+  source                        = "./modules/api_gateway"
+  project_name                  = var.project_name
+  environment                   = var.environment
+  lambda_function_hello_get_arn = module.lambda_hellow_terraform.function_arn
+  lambda_function_post_arn      = module.lambda_add_item.function_arn
+  lambda_function_put_arn       = module.lambda_update_item.function_arn
+  lambda_function_delete_arn    = module.lambda_delete_item.function_arn
+  lambda_function_get_arn       = module.lambda_get_items.function_arn
+  cognito_user_pool_arn         = aws_cognito_user_pool.user_pool.arn
+  aws_region                    = var.aws_region
 }

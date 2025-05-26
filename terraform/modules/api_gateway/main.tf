@@ -151,7 +151,7 @@ resource "aws_api_gateway_stage" "stage" {
   stage_name    = var.environment
 }
 
-# Permissão para invocar a lambda GET
+# Permissão para invocar a lambda GET items
 resource "aws_lambda_permission" "api_gateway_lambda_get_item" {
   statement_id  = "AllowAPIGatewayInvokeGet"
   action        = "lambda:InvokeFunction"

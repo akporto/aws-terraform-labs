@@ -19,28 +19,3 @@ variable "project_name" {
   type        = string
   default     = "hello-terraform"
 }
-
-variable "cognito_user_pool_arn" {
-  description = "ARN do Cognito User Pool"
-  type        = string
-}
-
-variable "lambda_function_get_arn" {
-  description = "ARN da função Lambda para GET"
-  type        = string
-}
-
-variable "lambda_function_post_arn" {
-  description = "ARN da função Lambda para POST"
-  type        = string
-}
-
-variable "lambda_function_put_arn" {
-  description = "ARN da função Lambda para PUT"
-  type        = string
-}
-
-variable "lambda_function_delete_arn" {
-  description = "ARN da função Lambda para DELETE"
-  type        = string
-}

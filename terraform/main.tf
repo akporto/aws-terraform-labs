@@ -1,11 +1,12 @@
 locals {
-  py_path_lambda_hellow_terraform = "${path.module}/../lambda/lambda_hellow_terraform/src/hellow_terraform.py"
-  py_path_add_item                = "${path.module}/../lambda/lambda_market_list/add_item/src/add_market_item.py"
-  py_path_update_item             = "${path.module}/../lambda/lambda_market_list/update_item/src/update_market_item.py"
-  py_path_delete_item             = "${path.module}/../lambda/lambda_market_list/delete_item/src/delete_market_item.py"
+  py_path_lambda_hellow_terraform = "${path.module}/../lambdas/lambda_hellow_terraform/src/hellow_terraform.py"
+  py_path_add_item                = "${path.module}/../lambdas/lambda_market_list/add_item/src/add_market_item.py"
+  py_path_update_item             = "${path.module}/../lambdas/lambda_market_list/update_item/src/update_market_item.py"
+  py_path_delete_item             = "${path.module}/../lambdas/lambda_market_list/delete_item/src/delete_market_item.py"
+  py_path_get_item                = "${path.module}/../lambdas/lambda_market_list/get_items/src/get_items.py"
 }
 
-# Recurso Cognito User Pool
+# Cognito
 resource "aws_cognito_user_pool" "user_pool" {
   name = "my-userpool"
 
@@ -19,6 +20,7 @@ resource "aws_cognito_user_pool" "user_pool" {
   email_configuration {
     email_sending_account = "COGNITO_DEFAULT"
   }
+
   auto_verified_attributes = ["email"]
 
   password_policy {
@@ -43,11 +45,11 @@ resource "aws_cognito_user_pool" "user_pool" {
   }
 }
 
-# Recurso do Client
 resource "aws_cognito_user_pool_client" "user_pool_client" {
   name                         = "my-client"
   user_pool_id                 = aws_cognito_user_pool.user_pool.id
   supported_identity_providers = ["COGNITO"]
+
   explicit_auth_flows = [
     "ALLOW_USER_SRP_AUTH",
     "ALLOW_REFRESH_TOKEN_AUTH",
@@ -67,7 +69,7 @@ resource "aws_cognito_user_pool_client" "user_pool_client" {
   }
 }
 
-# Módulo Lambda Hello Terraform 
+# Lambda Hello Terraform
 module "lambda_hellow_terraform" {
   source        = "./modules/lambda"
   function_name = "${var.project_name}-${var.environment}-lambda-hellow-terraform"
@@ -87,7 +89,7 @@ module "lambda_hellow_terraform" {
   }
 }
 
-# Tabela DynamoDB
+# DynamoDB
 resource "aws_dynamodb_table" "market_list_table" {
   name         = "${var.project_name}-${var.environment}-market-list"
   billing_mode = "PAY_PER_REQUEST"
@@ -111,7 +113,7 @@ resource "aws_dynamodb_table" "market_list_table" {
   }
 }
 
-# Política IAM para acesso DynamoDB
+# IAM Policy
 resource "aws_iam_policy" "dynamodb_access_policy" {
   name        = "${var.project_name}-${var.environment}-lambda-dynamodb-policy"
   description = "Permite que as funções Lambda acessem a tabela DynamoDB"
@@ -213,15 +215,40 @@ resource "aws_iam_role_policy_attachment" "lambda_delete_item_dynamodb" {
   policy_arn = aws_iam_policy.dynamodb_access_policy.arn
 }
 
-# Módulo API Gateway - passa as ARNs das Lambdas
+# Lambda Get Items
+module "lambda_get_items" {
+  source        = "./modules/lambda"
+  function_name = "${var.project_name}-${var.environment}-get-items"
+  description   = "Função para obter itens da lista de mercado"
+  handler       = "get_items.lambda_handler"
+  runtime       = "python3.12"
+  timeout       = 10
+  memory_size   = 128
+  artifact_path = local.py_path_get_item
+  environment_variables = {
+    DYNAMODB_TABLE_NAME = aws_dynamodb_table.market_list_table.name
+  }
+  tags = {
+    Projeto  = var.project_name
+    Ambiente = var.environment
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_get_items_dynamodb" {
+  role       = module.lambda_get_items.role_name
+  policy_arn = aws_iam_policy.dynamodb_access_policy.arn
+}
+
+# API Gateway
 module "api_gateway" {
-  source                     = "./modules/api_gateway"
-  project_name               = var.project_name
-  environment                = var.environment
-  lambda_function_get_arn    = module.lambda_hellow_terraform.function_arn
-  lambda_function_post_arn   = module.lambda_add_item.function_arn
-  lambda_function_put_arn    = module.lambda_update_item.function_arn
-  lambda_function_delete_arn = module.lambda_delete_item.function_arn
-  aws_region                 = var.aws_region
-  cognito_user_pool_arn      = aws_cognito_user_pool.user_pool.arn
+  source                        = "./modules/api_gateway"
+  project_name                  = var.project_name
+  environment                   = var.environment
+  lambda_function_hello_get_arn = module.lambda_hellow_terraform.function_arn
+  lambda_function_post_arn      = module.lambda_add_item.function_arn
+  lambda_function_put_arn       = module.lambda_update_item.function_arn
+  lambda_function_delete_arn    = module.lambda_delete_item.function_arn
+  lambda_function_get_arn       = module.lambda_get_items.function_arn
+  cognito_user_pool_arn         = aws_cognito_user_pool.user_pool.arn
+  aws_region                    = var.aws_region
 }

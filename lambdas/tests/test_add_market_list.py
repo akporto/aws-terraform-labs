@@ -4,12 +4,6 @@ from unittest.mock import MagicMock
 import os
 import sys
 
-import json
-import pytest
-from unittest.mock import MagicMock
-import os
-import sys
-
 # Ajusta o caminho para importar corretamente o módulo da Lambda
 sys.path.append(
     os.path.abspath(

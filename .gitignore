@@ -81,13 +81,3 @@ Thumbs.db
 # Outros
 # ================
 *.zip
-*.tar
-*.gz
-<<<<<<< HEAD
-terraform.auto.tfvars
-=======
-terraform.auto.tfvars
-
-__pycache__/
-*.py[cod]
->>>>>>> 1f77c1d14997af99d2a1c38c3ee3ed0f2825c7aa

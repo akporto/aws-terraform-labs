@@ -242,14 +242,13 @@ resource "aws_iam_role_policy_attachment" "lambda_get_items_dynamodb" {
 
 # Módulo API Gateway - passa as ARNs das Lambdas
 module "api_gateway" {
-  source                        = "./modules/api_gateway"
-  project_name                  = var.project_name
-  environment                   = var.environment
-  lambda_function_hello_get_arn = module.lambda_hellow_terraform.function_arn
-  lambda_function_post_arn      = module.lambda_add_item.function_arn
-  lambda_function_put_arn       = module.lambda_update_item.function_arn
-  lambda_function_delete_arn    = module.lambda_delete_item.function_arn
-  lambda_function_get_arn       = module.lambda_get_items.function_arn
-  cognito_user_pool_arn         = aws_cognito_user_pool.user_pool.arn
-  aws_region                    = var.aws_region
+  source                     = "./modules/api_gateway"
+  project_name               = var.project_name
+  environment                = var.environment
+  lambda_function_post_arn   = module.lambda_add_item.function_arn
+  lambda_function_put_arn    = module.lambda_update_item.function_arn
+  lambda_function_delete_arn = module.lambda_delete_item.function_arn
+  lambda_function_get_arn    = module.lambda_get_items.function_arn
+  cognito_user_pool_arn      = aws_cognito_user_pool.user_pool.arn
+  aws_region                 = var.aws_region
 }

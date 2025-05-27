@@ -58,11 +58,11 @@ resource "null_resource" "create_pkg_dir" {
 # Configuração para empacotar o código Python
 data "archive_file" "lambda_zip" {
   depends_on = [null_resource.create_pkg_dir]
-  
+
   type        = "zip"
-  source_dir  = dirname(var.artifact_path)  # Pega todo o diretório onde está o arquivo
+  source_dir  = dirname(var.artifact_path) # Pega todo o diretório onde está o arquivo
   output_path = "${path.module}/lambda_pkg/${var.function_name}.zip"
-  
+
   # Exclui arquivos desnecessários
   excludes = [
     "__pycache__",

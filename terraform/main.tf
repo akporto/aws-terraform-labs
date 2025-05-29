@@ -136,8 +136,11 @@ resource "aws_iam_policy" "dynamodb_access_policy" {
           "dynamodb:Query",
           "dynamodb:Scan"
         ],
-        Effect   = "Allow",
-        Resource = aws_dynamodb_table.market_list_table.arn
+        Effect = "Allow",
+        Resource = [
+          aws_dynamodb_table.market_list_table.arn,
+          "${aws_dynamodb_table.market_list_table.arn}/index/*"
+        ]
       }
     ]
   })

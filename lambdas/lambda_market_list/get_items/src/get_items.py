@@ -4,6 +4,9 @@ import boto3
 from datetime import datetime
 from boto3.dynamodb.conditions import Key
 
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table(os.environ['DYNAMODB_TABLE_NAME'])
+
 def lambda_handler(event, context):
     print("Recebida requisição para obter itens da lista")
 
@@ -14,10 +17,6 @@ def lambda_handler(event, context):
         pk = f"LIST#{date_str}"
 
         print(f"Consultando itens com PK: {pk}")
-
-        # Inicializa boto3 e tabela aqui
-        dynamodb = boto3.resource('dynamodb')
-        table = dynamodb.Table(os.environ['DYNAMODB_TABLE_NAME'])
 
         # Query no DynamoDB
         response = table.query(

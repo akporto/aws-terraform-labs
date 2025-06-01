@@ -1,8 +1,9 @@
 import json
-import pytest
-from unittest.mock import MagicMock
 import os
 import sys
+from unittest.mock import MagicMock
+
+import pytest
 
 # Ajusta o caminho para importar corretamente o módulo da Lambda
 sys.path.append(
@@ -45,7 +46,7 @@ def test_lambda_handler_invalid_json(monkeypatch):
     context = {}
 
     # Corrigido: chamada correta ao handler da Lambda
-    response = add_market_item.add_handler(event, context)
+    response = add_market_item.lambda_handler(event, context)
     body = json.loads(response["body"])
 
     assert response["statusCode"] == 500

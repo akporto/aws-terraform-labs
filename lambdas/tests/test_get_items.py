@@ -1,88 +1,73 @@
-import pytest
-from unittest.mock import MagicMock, patch
-import sys
+import importlib
+import json
 import os
+import sys
 from datetime import datetime
+from unittest.mock import MagicMock, patch
 
+import pytest
+
+# Ajusta o caminho para importar corretamente o módulo da Lambda
 sys.path.append(
     os.path.abspath(
         os.path.join(os.path.dirname(__file__), "../lambda_market_list/get_items/src")
     )
 )
 
+# Importa o módulo onde estão as funções da Lambda
 import get_items
 
 
-@patch("get_items.boto3")
-def test_lambda_handler_success(mock_boto3):
-    mock_dynamodb = MagicMock()
-    mock_table = MagicMock()
+def test_lambda_handler_success(mock_table):
     mock_table.query.return_value = {
         "Items": [{"itemId": "123", "name": "banana", "status": "todo"}]
     }
-    mock_dynamodb.resource.return_value.Table.return_value = mock_table
-    mock_boto3.resource.return_value = mock_dynamodb.resource.return_value
 
     event = {"queryStringParameters": {"date": "20250526"}}
     response = get_items.lambda_handler(event, None)
 
     assert response["statusCode"] == 200
+    body = json.loads(response["body"])
+    assert body["success"] is True
     assert "banana" in response["body"]
-    assert '"success": true' in response["body"]
+    assert f"{len(body['items'])} item(s)" in body["message"]
 
 
-# Sem parametro de data
-@patch("get_items.boto3")
-def test_lambda_handler_no_date_parameter(mock_boto3):
-    mock_dynamodb = MagicMock()
-    mock_table = MagicMock()
+def test_lambda_handler_no_date_parameter(mock_table):
     mock_table.query.return_value = {
         "Items": [{"itemId": "456", "name": "apple", "status": "todo"}]
     }
-    mock_dynamodb.resource.return_value.Table.return_value = mock_table
-    mock_boto3.resource.return_value = mock_dynamodb.resource.return_value
 
     event = {"queryStringParameters": None}
     response = get_items.lambda_handler(event, None)
 
     assert response["statusCode"] == 200
+    body = json.loads(response["body"])
+    assert body["success"] is True
     assert "apple" in response["body"]
-    assert '"success": true' in response["body"]
-
-    # Confirma que o pk usada foi a data atual
     today = datetime.now().strftime("%Y%m%d")
-    assert f"lista de {today}" in response["body"]
+    assert f"lista de {today}" in body["message"]
 
 
-# Retorno vazio
-@patch("get_items.boto3")
-def test_lambda_handler_empty_items(mock_boto3):
-    mock_dynamodb = MagicMock()
-    mock_table = MagicMock()
+def test_lambda_handler_empty_items(mock_table):
     mock_table.query.return_value = {"Items": []}
-    mock_dynamodb.resource.return_value.Table.return_value = mock_table
-    mock_boto3.resource.return_value = mock_dynamodb.resource.return_value
 
     event = {"queryStringParameters": {"date": "20250526"}}
     response = get_items.lambda_handler(event, None)
 
     assert response["statusCode"] == 200
-    assert '"items": []' in response["body"]
-    assert '"success": true' in response["body"]
+    body = json.loads(response["body"])
+    assert body["success"] is True
+    assert body["items"] == []
 
 
-# Falha ao executar
-@patch("get_items.boto3")
-def test_lambda_handler_exception(mock_boto3):
-    mock_dynamodb = MagicMock()
-    mock_table = MagicMock()
+def test_lambda_handler_exception(mock_table):
     mock_table.query.side_effect = Exception("DynamoDB falhou")
-    mock_dynamodb.resource.return_value.Table.return_value = mock_table
-    mock_boto3.resource.return_value = mock_dynamodb.resource.return_value
 
     event = {"queryStringParameters": {"date": "20250526"}}
     response = get_items.lambda_handler(event, None)
 
     assert response["statusCode"] == 500
-    assert "DynamoDB falhou" in response["body"]
-    assert '"success": false' in response["body"]
+    body = json.loads(response["body"])
+    assert body["success"] is False
+    assert "DynamoDB falhou" in body["message"]

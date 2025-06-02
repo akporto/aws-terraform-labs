@@ -85,12 +85,12 @@ output "lambda_delete_item_invoke_arn" {
 # Tabela DynamoDB
 output "dynamodb_table_name" {
   description = "Nome da tabela DynamoDB criada"
-  value       = aws_dynamodb_table.market_list_table.name
+  value       = module.dynamodb.table_name
 }
 
 output "dynamodb_table_arn" {
   description = "ARN da tabela DynamoDB criada"
-  value       = aws_dynamodb_table.market_list_table.arn
+  value       = module.dynamodb.table_arn
 }
 
 # API Gateway URL
@@ -118,4 +118,31 @@ output "lambda_get_items_role_arn" {
 output "lambda_get_items_invoke_arn" {
   description = "ARN de invocação da função Lambda Get Items"
   value       = module.lambda_get_items.invoke_arn
+}
+
+# Cognito Outputs
+output "cognito_user_pool_id" {
+  description = "ID do Cognito User Pool"
+  value       = module.cognito.user_pool_id
+}
+
+output "cognito_user_pool_arn" {
+  description = "ARN do Cognito User Pool"
+  value       = module.cognito.user_pool_arn
+}
+
+output "cognito_user_pool_client_id" {
+  description = "ID do Cognito User Pool Client"
+  value       = module.cognito.user_pool_client_id
+}
+
+output "cognito_user_pool_endpoint" {
+  description = "Endpoint do Cognito User Pool"
+  value       = module.cognito.user_pool_endpoint
+}
+
+# IAM Outputs
+output "dynamodb_access_policy_arn" {
+  description = "ARN da política de acesso ao DynamoDB"
+  value       = module.iam.dynamodb_access_policy_arn
 }

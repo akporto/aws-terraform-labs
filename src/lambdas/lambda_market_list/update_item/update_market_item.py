@@ -26,11 +26,12 @@ def lambda_handler(event, context):
             }
             return response
 
-
         # Verifica existência do item
         query_result = table.query(
             IndexName="item_id",
-            KeyConditionExpression=boto3.dynamodb.conditions.Key("SK").eq(f"ITEM#{item_id}")
+            KeyConditionExpression=boto3.dynamodb.conditions.Key("SK").eq(
+                f"ITEM#{item_id}"
+            ),
         ).get("Items")
 
         existing_item = query_result[0] if query_result else None

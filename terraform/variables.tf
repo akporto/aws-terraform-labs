@@ -21,4 +21,3 @@ variable "project_name" {
 }
 
 
-

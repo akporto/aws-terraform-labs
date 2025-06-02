@@ -1,0 +1,43 @@
+name: Terraform CI/CD
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  terraform:
+    name: Terraform CI/CD
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: sa-east-1
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.11.3
+
+      - name: Terraform Init
+        run: terraform -chdir=environments/dev init
+
+      - name: Terraform Format
+        run: |
+          if ! terraform -chdir=environments/dev fmt -check; then
+            echo "Erro: Arquivos Terraform não estão formatados corretamente."
+            echo "Por favor, execute 'terraform fmt' localmente para corrigir a formatação e faça commit das alterações."
+            exit 1
+          fi
+        continue-on-error: false
+
+      - name: Terraform Plan
+        run: terraform -chdir=environments/dev plan -out=tfplan
+
+      - name: Terraform Apply
+        if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+        run: terraform -chdir=environments/dev apply -auto-approve tfplan

@@ -1,145 +1,126 @@
 # Hello Terraform
 
-Este projeto é um estudo prático utilizando o Terraform para provisionamento de infraestrutura na AWS, implementando uma API para gerenciar listas de compras de mercado. A infraestrutura inclui funções Lambda (em Java e Python), API Gateway e DynamoDB.
+Este projeto é um estudo prático utilizando o Terraform para provisionamento de infraestrutura na AWS, implementando uma API para gerenciar listas de compras de mercado. A infraestrutura inclui funções Lambda (Python), API Gateway, DynamoDB e Cognito.
 
-##  Fluxo de Trabalho Git
+
+## 🔄 Fluxo de Trabalho Git
 
 ### Padrões de Branch
-* `main`: Branch de produção (protegida)
-* `dev`: Branch de desenvolvimento (protegida)
-* `feature/nome-da-feature`: Novas funcionalidades
-* `bugfix/nome-do-bug`: Correções de bugs
-* `hotfix/nome-do-hotfix`: Correções urgentes em produção
-* `release/x.y.z`: Preparação para lançamento de versão
 
+- **`main`**: Branch de produção (protegida)
+- **`dev`**: Branch de desenvolvimento (protegida)
+- **`feature/nome-da-feature`**: Novas funcionalidades
+- **`bugfix/nome-do-bug`**: Correções de bugs
+- **`hotfix/nome-do-hotfix`**: Correções urgentes em produção
+- **`release/x.y.z`**: Preparação para lançamento de versão
 
 ### Processo de Contribuição
-1. Crie uma branch a partir de dev:
 
-```bash
-git checkout dev
-git pull origin dev
-git checkout -b feature/minha-feature
-```
+1. **Crie uma branch a partir de dev:**
+   ```bash
+   git checkout dev
+   git pull origin dev
+   git checkout -b feature/minha-feature
+   ```
 
-Envie suas alterações:
+2. **Envie suas alterações:**
+   ```bash
+   git add .
+   git commit -m "Descrição clara das mudanças"
+   git push origin feature/minha-feature
+   ```
 
-```bash
-git add .
-git commit -m "Descrição clara das mudanças"
-git push origin feature/minha-feature
-```
+3. **Abra um Pull Request no GitHub:**
+   - Target branch: `dev`
+   - Adicione revisores quando aplicável
+   - Aguarde aprovações
 
-Abra um Pull Request no GitHub:
+## 📋 Pré-requisitos
 
-Target branch: dev
-Adicione revisores quando aplicável
-Aguarde aprovações
-
-
-
-## Pré-requisitos
 Antes de iniciar, você precisa ter instalado:
 
-Terraform v1.0.0 ou superior
-AWS CLI configurado com credenciais
-Java JDK 11 (para funções Lambda em Java)
-Python 3.9 (para funções Lambda em Python)
-Maven (para compilação dos projetos Java)
-Git
+- **Terraform** v1.0.0 ou superior
+- **AWS CLI** configurado com credenciais
+- **Python 3.9+** (para funções Lambda)
+- **Git**
 
-
-## Componentes do Sistema
-1. Funções Lambda
-   O projeto contém quatro funções Lambda:
-
-Função Um (Java): Função básica que retorna "Hello Terraform"
-Função Dois (Java): Adiciona novos itens à lista de mercado
-Função Três (Python): Atualiza itens existentes na lista de mercado
-Função Quatro (Python): Remove itens da lista de mercado
-
-2. API Gateway
-   Uma API REST que expõe endpoints para gerenciar a lista de mercado:
-
-POST /items: Adiciona um novo item (integrado com Função Dois)
-PUT /items: Atualiza um item existente (integrado com Função Três)
-DELETE /items: Remove um item (integrado com Função Quatro)
-
-3. DynamoDB
-   Armazena todos os itens da lista de mercado em uma tabela com:
-
-Chave primária composta: PK (partition key) e SK (sort key)
-Formato de chaves: PK = "LIST#[data]" e SK = "ITEM#[id]"
-
-## Configuração e Deploy
-1. Clone o repositório
+### Dependências Python
 
 ```bash
-git clone https://github.com/akporto/terraform-estudo01.git
-cd terraform-estudo01
+pip install -r requirements.txt
 ```
 
-2. Compile as funções Lambda Java
-   ```bash
-   cd lambda/funcao-um
-   mvn clean package
-   cd ../funcao-dois
-   mvn clean package
-   cd ../../
-   ```
+## Configuração do VSCode
+**Para executar os testes corretamente no VSCode, crie o arquivo .vscode/settings.json na raiz do projeto:**
 
-   Isso gerará os arquivos .jar dentro de target/, que serão usados pelo Terraform para criar as funções Lambda.
-
-3. Configure as variáveis do ambiente
-   ```bash
-   cd terraform/environments/dev
-   cp terraform.tfvars.example terraform.tfvars
-   ```
-Edite o arquivo terraform.tfvars com seus próprios valores
-
-4. Configure o backend remoto
-  ``` bash
-   cp backend.tf.example backend.tf
-   ```
-
-Edite o arquivo backend.tf com as configurações do seu bucket S3
-
-5. Inicialize e aplique a infraestrutura
-   ```bash
-   cd ../../
-   terraform init
-   terraform plan -var-file=environments/dev/terraform.tfvars
-   terraform apply -var-file=environments/dev/terraform.tfvars
-   ```
-
-## Explicação dos Arquivos de Configuração Terraform
-
-Módulos
-O projeto utiliza um módulo reutilizável para criar funções Lambda, localizado em modules/lambda/. Esse módulo encapsula toda a configuração necessária para criar uma função Lambda padrão, incluindo:
-
-A função Lambda em si
-Papel IAM e políticas de permissão
-Configuração de logs
-
-### Arquivos Principais
-🔙 backend.tf
-O arquivo backend.tf define o backend remoto onde o Terraform armazenará o estado da infraestrutura. Usar um backend remoto como o S3 permite que múltiplos desenvolvedores compartilhem o mesmo estado de forma segura.
-
-```
-terraform {
-backend "s3" {
-bucket         = "nome-do-seu-bucket"
-key            = "caminho/do/arquivo/terraform.tfstate"
-region         = "regiao-aws"
-dynamodb_table = "nome-da-tabela-dynamodb"
-encrypt        = true
-}
+```bash
+json{
+  "python.analysis.extraPaths": [
+    "src/lambdas/lambda_market_list/add_item",
+    "src/lambdas/lambda_market_list/get_items",
+    "src/lambdas/lambda_market_list/update_item"
+  ]
 }
 ```
 
-terraform.tfvars
+**Este arquivo configura o analisador Python do VSCode para reconhecer os caminhos das funções Lambda, permitindo que os testes sejam executados corretamente.**
 
-O arquivo terraform.tfvars armazena os valores das variáveis usadas no projeto, separando as configurações do código principal. Ele facilita a reutilização do código com diferentes ambientes.
+
+## 🚀 Componentes do Sistema
+
+### 1. Funções Lambda (Python)
+
+O projeto contém cinco funções Lambda:
+
+- **Hello Terraform**: Função básica que retorna "Hello Terraform"
+- **Add Item**: Adiciona novos itens à lista de mercado
+- **Get Items**: Lista todos os itens da lista de mercado
+- **Update Item**: Atualiza itens existentes na lista de mercado
+- **Delete Item**: Remove itens da lista de mercado
+
+### 2. API Gateway
+
+Uma API REST que expõe endpoints para gerenciar a lista de mercado:
+
+- `GET /items`: Lista todos os itens
+- `POST /items`: Adiciona um novo item
+- `PUT /items`: Atualiza um item existente
+
+
+### 3. DynamoDB
+
+Armazena todos os itens da lista de mercado em uma tabela com:
+
+- Chave primária composta: PK (partition key) e SK (sort key)
+- Formato de chaves: PK = "LIST#[data]" e SK = "ITEM#[id]"
+
+### 4. Cognito
+
+Gerencia autenticação e autorização de usuários.
+
+## ⚙️ Configuração e Deploy
+
+### 1. Clone o repositório
+
+```bash
+git clone https://github.com/akporto/aws-terraform-labs.git
+cd aws-terraform-labs
+```
+
+### 2. Instale as dependências Python
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Configure as variáveis do ambiente
+
+```bash
+cd environments/dev
+cp terraform.tfvars.example terraform.tfvars
+```
+
+Edite o arquivo `terraform.tfvars` com seus próprios valores:
 
 ```hcl
 aws_region   = "sa-east-1"
@@ -147,63 +128,155 @@ project_name = "hello-terraform"
 environment  = "dev"
 ```
 
-📝 main.tf
-Define todos os recursos principais, incluindo:
+### 4. Configure o backend remoto
 
-Funções Lambda (usando módulos para Java e recursos diretos para Python)
-Tabela DynamoDB
-Políticas IAM para acesso ao DynamoDB
+```bash
+cp backend.tf.example backend.tf
+```
 
-🌐 api_gateway.tf
-Define o API Gateway REST com endpoints para operações CRUD na lista de mercado, integrando-os com as funções Lambda.
-🧪 Testando a API
+Edite o arquivo `backend.tf` com as configurações do seu bucket S3:
+
+```hcl
+terraform {
+  backend "s3" {
+    bucket         = "nome-do-seu-bucket"
+    key            = "caminho/do/arquivo/terraform.tfstate"
+    region         = "regiao-aws"
+    dynamodb_table = "nome-da-tabela-dynamodb"
+    encrypt        = true
+  }
+}
+```
+
+### 5. Inicialize e aplique a infraestrutura
+
+```bash
+cd ../../terraform
+terraform init
+terraform plan -var-file=../environments/dev/terraform.tfvars
+terraform apply -var-file=../environments/dev/terraform.tfvars
+```
+
+## 🧪 Testando a API
+
 Após o deploy, você pode testar a API usando curl ou ferramentas como Postman:
 
-## Adicionar um item (Função Dois)
+### Listar itens
+
+```bash
+curl -X GET \
+  https://seu-api-gateway-url/dev/lista-tarefa \
+  -H 'Authorization: Bearer seu-token'
+```
+
+### Adicionar um item
+
 ```bash
 curl -X POST \
-https://seu-api-gateway-url/dev/items \
--H 'Content-Type: application/json' \
--d '{"name": "Leite"}'
+  https://seu-api-gateway-url/dev/lista-tarefa \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer seu-token' \
+  -d '{"name": "Leite"}'
 ```
 
-## Atualizar um item (Função Três)
+### Atualizar um item
+
 ```bash
 curl -X PUT \
-https://seu-api-gateway-url/dev/items \
--H 'Content-Type: application/json' \
--d '{"pk": "20250514", "itemId": "abc123", "name": "Leite Integral", "status": "DONE"}'
+  https://seu-api-gateway-url/dev/lista-tarefa \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer seu-token' \
+  -d '{"pk": "20250514", "itemId": "abc123", "name": "Leite Integral", "status": "DONE"}'
 ```
 
-## Remover um item (Função Quatro)
+
+## 🛠️ Desenvolvimento
+
+### Script de Limpeza e Formatação
+
+O projeto inclui um script automatizado para limpeza e formatação:
+
 ```bash
-curl -X DELETE \
-https://seu-api-gateway-url/dev/items \
--H 'Content-Type: application/json' \
--d '{"pk": "20250514", "itemId": "abc123"}'
+# Dar permissão de execução
+chmod +x format-code.sh
+
+# Executar o script
+./format-code.sh
 ```
-🧹
-## Limpeza dos Recursos
+
+O script realiza:
+
+- Remove arquivos `.zip` e `__pycache__`
+- Limpa arquivos temporários do Terraform
+- Destrói infraestrutura local se necessário
+- Formata código Python com `black` e `isort`
+- Formata arquivos Terraform com `terraform fmt`
+
+### Testes
+
+Execute os testes das funções Lambda:
+
+```bash
+# Instalar dependências de teste
+pip install -r requirements.txt
+
+# Executar testes
+python -m pytest src/lambdas/tests/ -v
+```
+
+## 📁 Explicação dos Arquivos de Configuração
+
+### Módulos Terraform
+
+O projeto utiliza módulos reutilizáveis localizados em `terraform/modules/`:
+
+- **api_gateway/**: Configuração do API Gateway
+- **cognito/**: Configuração do Cognito User Pool
+- **dynamodb/**: Configuração da tabela DynamoDB
+- **iam/**: Roles e políticas IAM
+- **lambda/**: Configuração das funções Lambda
+
+### Arquivos Principais
+
+#### `environments/dev/backend.tf`
+
+Define o backend remoto onde o Terraform armazenará o estado da infraestrutura.
+
+#### `environments/dev/terraform.tfvars`
+
+Armazena os valores das variáveis específicas do ambiente de desenvolvimento.
+
+#### `terraform/main.tf`
+
+Define todos os recursos principais, integrando os módulos.
+
+
+## 🔒 Segurança
+
+- Todas as permissões seguem o princípio do menor privilégio
+- Autenticação gerenciada pelo Cognito
+- Variáveis de ambiente sensíveis gerenciadas pelo Terraform
+- Recursos têm tags para fácil identificação e gerenciamento
+
+## 🧹 Limpeza dos Recursos
 
 Para destruir toda a infraestrutura criada:
 
 ```bash
-terraform destroy -var-file=environments/dev/terraform.tfvars
+cd terraform
+terraform destroy -var-file=../environments/dev/terraform.tfvars
 ```
 
-## Arquitetura
+Ou use o script de limpeza:
 
-O sistema segue uma arquitetura serverless:
+```bash
+./format-code.sh
+```
 
-O cliente envia requisições REST para o API Gateway
-O API Gateway encaminha as requisições para as funções Lambda correspondentes
-As funções Lambda processam as operações (CRUD) na tabela DynamoDB
-Os resultados são retornados ao cliente através do API Gateway
+## 🤝 Contribuição
 
-## Segurança
-
-Todas as permissões seguem o princípio do menor privilégio
-As variáveis de ambiente sensíveis são gerenciadas pelo Terraform
-Os recursos têm tags para fácil identificação e gerenciamento
-
-
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request

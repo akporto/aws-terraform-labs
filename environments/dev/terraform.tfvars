@@ -1,5 +1,5 @@
-aws_region   = "sa-east-1"
+aws_region = "sa-east-1"
 
 project_name = "hello-terraform"
 
-environment  = "dev"
+environment = "dev"

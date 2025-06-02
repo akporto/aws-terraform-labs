@@ -8,6 +8,21 @@ variable "environment" {
   type        = string
 }
 
+variable "aws_region" {
+  description = "Região da AWS (ex: sa-east-1)"
+  type        = string
+}
+
+variable "lambda_function_hello_get_arn" {
+  description = "ARN da Lambda para GET /hello"
+  type        = string
+}
+
+variable "lambda_function_get_arn" {
+  description = "ARN da Lambda para GET /items"
+  type        = string
+}
+
 variable "lambda_function_post_arn" {
   description = "ARN da Lambda para POST"
   type        = string
@@ -23,7 +38,7 @@ variable "lambda_function_delete_arn" {
   type        = string
 }
 
-variable "aws_region" {
-  description = "Região da AWS (ex: sa-east-1)"
+variable "cognito_user_pool_arn" {
+  description = "ARN do Cognito User Pool"
   type        = string
 }

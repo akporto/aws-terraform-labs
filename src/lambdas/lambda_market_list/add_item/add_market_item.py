@@ -2,6 +2,7 @@ import json
 import os
 import uuid
 from datetime import datetime
+
 import boto3
 
 dynamodb = boto3.resource("dynamodb")

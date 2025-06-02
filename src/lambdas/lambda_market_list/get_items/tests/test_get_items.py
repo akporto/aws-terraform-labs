@@ -1,16 +1,18 @@
-import pytest
-from unittest.mock import MagicMock, patch
-import sys
 import os
+import sys
 from datetime import datetime
+from unittest.mock import MagicMock, patch
+
+import pytest
 
 # Garante que o path para o src funcione
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
 
 # Define a variável de ambiente usada no código
-os.environ['DYNAMODB_TABLE_NAME'] = 'mock-table'
+os.environ["DYNAMODB_TABLE_NAME"] = "mock-table"
 
-import get_items 
+import get_items
+
 
 @patch("get_items.boto3")
 def test_lambda_handler_success(mock_boto3):
@@ -28,6 +30,7 @@ def test_lambda_handler_success(mock_boto3):
     assert response["statusCode"] == 200
     assert "banana" in response["body"]
     assert '"success": true' in response["body"]
+
 
 # Sem parametro de data
 @patch("get_items.boto3")
@@ -51,6 +54,7 @@ def test_lambda_handler_no_date_parameter(mock_boto3):
     today = datetime.now().strftime("%Y%m%d")
     assert f"lista de {today}" in response["body"]
 
+
 # Retorno vazio
 @patch("get_items.boto3")
 def test_lambda_handler_empty_items(mock_boto3):
@@ -66,6 +70,7 @@ def test_lambda_handler_empty_items(mock_boto3):
     assert response["statusCode"] == 200
     assert '"items": []' in response["body"]
     assert '"success": true' in response["body"]
+
 
 # Falha ao executar
 @patch("get_items.boto3")

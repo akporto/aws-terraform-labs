@@ -1,13 +1,29 @@
-variable "user_pool_name" {
-  description = "Nome do Cognito User Pool"
+variable "project_name" {
+  description = "Nome do projeto"
   type        = string
-  default     = "my-userpool"
 }
 
-variable "user_pool_client_name" {
-  description = "Nome do Cognito User Pool Client"
+variable "environment" {
+  description = "Ambiente (ex: dev, prod)"
   type        = string
-  default     = "my-client"
+}
+
+variable "refresh_token_validity" {
+  description = "Validade do refresh token em horas"
+  type        = number
+  default     = 1
+}
+
+variable "access_token_validity" {
+  description = "Validade do access token em horas"
+  type        = number
+  default     = 1
+}
+
+variable "id_token_validity" {
+  description = "Validade do id token em horas"
+  type        = number
+  default     = 1
 }
 
 variable "tags" {

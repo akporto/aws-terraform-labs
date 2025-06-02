@@ -1,6 +1,6 @@
 # Cognito User Pool
 resource "aws_cognito_user_pool" "user_pool" {
-  name = var.user_pool_name
+  name = "${var.project_name}-${var.environment}-userpool"
 
   schema {
     name                     = "email"
@@ -41,7 +41,7 @@ resource "aws_cognito_user_pool" "user_pool" {
 
 # Cognito User Pool Client
 resource "aws_cognito_user_pool_client" "user_pool_client" {
-  name                         = var.user_pool_client_name
+  name                         = "${var.project_name}-${var.environment}-client"
   user_pool_id                 = aws_cognito_user_pool.user_pool.id
   supported_identity_providers = ["COGNITO"]
 
@@ -53,9 +53,9 @@ resource "aws_cognito_user_pool_client" "user_pool_client" {
 
   generate_secret               = false
   prevent_user_existence_errors = "LEGACY"
-  refresh_token_validity        = 1
-  access_token_validity         = 1
-  id_token_validity             = 1
+  refresh_token_validity        = var.refresh_token_validity
+  access_token_validity         = var.access_token_validity
+  id_token_validity             = var.id_token_validity
 
   token_validity_units {
     access_token  = "hours"

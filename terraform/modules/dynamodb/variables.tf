@@ -9,7 +9,6 @@ variable "environment" {
 }
 
 variable "tags" {
-  description = "Tags para os recursos do DynamoDB"
+  description = "Tags padrão para os recursos"
   type        = map(string)
-  default     = {}
 }

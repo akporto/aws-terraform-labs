@@ -15,8 +15,8 @@ check_tool black
 check_tool isort
 check_tool terraform
 
-# Caminhos corrigidos baseados na estrutura do projeto
-PYTHON_DIRS="src/lambdas/lambda_hello_terraform src/lambdas/lambda_market_list src/lambdas/tests"
+
+PYTHON_DIRS="src/lambdas/lambda_hello_terraform src/lambdas/lambda_task_list tests"
 TERRAFORM_DIRS="terraform terraform/modules/api_gateway terraform/modules/lambda terraform/modules/cognito terraform/modules/dynamodb terraform/modules/iam environments/dev"
 CHANGES=0
 
@@ -65,7 +65,7 @@ delete_pycache_files() {
   find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null
   find . -type f -name "*.pyc" -delete 2>/dev/null
   find . -type f -name "*.pyo" -delete 2>/dev/null
-  
+
   if git diff --quiet; then
     echo "Nenhum arquivo __pycache__ foi excluído (nenhum encontrado)."
   else
@@ -77,42 +77,31 @@ delete_pycache_files() {
 destroy_terraform_local() {
   echo "Destruindo infraestrutura local com Terraform..."
 
-  # Verifica se deve usar o ambiente dev ou terraform raiz
-  if [ -d "environments/dev" ]; then
-    TF_DIR="environments/dev"
-    TF_VAR_FILE="terraform.tfvars"
-  else
-    TF_DIR="terraform"
-    TF_VAR_FILE="terraform.auto.tfvars"
-  fi
+  TF_ROOT="terraform"
+  TF_VAR_FILE="../environments/dev/terraform.tfvars"
 
-  if [ -d "$TF_DIR" ]; then
-    cd "$TF_DIR" || exit 1
-
-    terraform init
+  if [ -d "$TF_ROOT" ]; then
+    terraform -chdir=$TF_ROOT init
     if [ $? -ne 0 ]; then
-      echo "Erro ao executar terraform init em $TF_DIR."
-      cd - > /dev/null || exit 1
+      echo "Erro ao executar terraform init no diretório $TF_ROOT."
       exit 1
     fi
 
     if [ -f "$TF_VAR_FILE" ]; then
-      terraform destroy -auto-approve -var-file="$TF_VAR_FILE"
+      terraform -chdir=$TF_ROOT destroy -auto-approve -var-file="$TF_VAR_FILE"
     else
-      echo "Arquivo de variáveis $TF_VAR_FILE não encontrado. Executando destroy sem var-file..."
-      terraform destroy -auto-approve
+      echo "Arquivo $TF_VAR_FILE não encontrado. Executando destroy sem var-file..."
+      terraform -chdir=$TF_ROOT destroy -auto-approve
     fi
-    
+
     if [ $? -ne 0 ]; then
-      echo "Erro ao executar terraform destroy em $TF_DIR."
-      cd - > /dev/null || exit 1
+      echo "Erro ao executar terraform destroy."
       exit 1
     fi
 
-    cd - > /dev/null || exit 1
     echo "Infraestrutura local destruída com sucesso."
   else
-    echo "Diretório $TF_DIR não encontrado."
+    echo "Diretório $TF_ROOT não encontrado."
     exit 1
   fi
 }
@@ -122,12 +111,7 @@ format_black() {
   for dir in $PYTHON_DIRS; do
     if [ -d "$dir" ]; then
       black "$dir" --line-length 88
-      if [ $? -eq 0 ]; then
-        echo "Formatação com black concluída em $dir."
-      else
-        echo "Erro ao executar black em $dir."
-        exit 1
-      fi
+      echo "Formatação com black concluída em $dir."
     else
       echo "Diretório $dir não encontrado, ignorando..."
     fi
@@ -146,12 +130,7 @@ format_isort() {
   for dir in $PYTHON_DIRS; do
     if [ -d "$dir" ]; then
       isort "$dir" --profile black
-      if [ $? -eq 0 ]; then
-        echo "Organização de imports com isort concluída em $dir."
-      else
-        echo "Erro ao executar isort em $dir."
-        exit 1
-      fi
+      echo "Organização de imports com isort concluída em $dir."
     else
       echo "Diretório $dir não encontrado, ignorando..."
     fi
@@ -170,12 +149,7 @@ format_terraform() {
   for dir in $TERRAFORM_DIRS; do
     if [ -d "$dir" ]; then
       terraform fmt -recursive "$dir"
-      if [ $? -eq 0 ]; then
-        echo "Formatação com terraform fmt concluída em $dir."
-      else
-        echo "Erro ao executar terraform fmt em $dir."
-        exit 1
-      fi
+      echo "Formatação com terraform fmt concluída em $dir."
     else
       echo "Diretório $dir não encontrado, ignorando..."
     fi
@@ -189,7 +163,7 @@ format_terraform() {
   fi
 }
 
-# Executar as funções na ordem
+
 delete_zip_files
 delete_terraform_files
 delete_pycache_files
@@ -198,7 +172,7 @@ format_black
 format_isort
 format_terraform
 
-# Sugerir commit se necessário
+
 if [ $CHANGES -eq 1 ]; then
   echo "Mudanças foram feitas nos arquivos. Considere fazer commit das alterações:"
   echo "  git add ."

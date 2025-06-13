@@ -100,24 +100,24 @@ output "api_url" {
 }
 
 # Lambda get items
-output "lambda_get_items_name" {
+output "lambda_get_item_name" {
   description = "Nome da função Lambda Get Items criada"
-  value       = module.lambda_get_items.function_name
+  value       = module.lambda_get_item.function_name
 }
 
-output "lambda_get_items_arn" {
+output "lambda_get_item_arn" {
   description = "ARN da função Lambda Get Items criada"
-  value       = module.lambda_get_items.function_arn
+  value       = module.lambda_get_item.function_arn
 }
 
-output "lambda_get_items_role_arn" {
+output "lambda_get_item_role_arn" {
   description = "ARN da role IAM criada para a função Lambda Get Items"
-  value       = module.lambda_get_items.role_arn
+  value       = module.lambda_get_item.role_arn
 }
 
-output "lambda_get_items_invoke_arn" {
+output "lambda_get_item_invoke_arn" {
   description = "ARN de invocação da função Lambda Get Items"
-  value       = module.lambda_get_items.invoke_arn
+  value       = module.lambda_get_item.invoke_arn
 }
 
 # Cognito Outputs

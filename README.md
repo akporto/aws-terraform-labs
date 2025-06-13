@@ -56,9 +56,9 @@ pip install -r requirements.txt
 ```bash
 json{
   "python.analysis.extraPaths": [
-    "src/lambdas/lambda_market_list/add_item",
-    "src/lambdas/lambda_market_list/get_items",
-    "src/lambdas/lambda_market_list/update_item"
+    "src/lambdas/lambda_task_list_api/add_item",
+    "src/lambdas/lambda_task_list_api/get_item",
+    "src/lambdas/lambda_task_list_api/update_item"
   ]
 }
 ```

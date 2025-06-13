@@ -13,28 +13,28 @@ variable "aws_region" {
   type        = string
 }
 
-variable "lambda_function_hello_get_arn" {
+variable "lambda_function_hello_arn" {
   description = "ARN da Lambda para GET /hello"
   type        = string
 }
 
-variable "lambda_function_get_arn" {
-  description = "ARN da Lambda para GET /items"
+variable "lambda_function_get_item_arn" {
+  description = "ARN da Lambda para GET /lista-tarefa (get_item)"
   type        = string
 }
 
 variable "lambda_function_post_arn" {
-  description = "ARN da Lambda para POST"
+  description = "ARN da Lambda para POST /lista-tarefa"
   type        = string
 }
 
 variable "lambda_function_put_arn" {
-  description = "ARN da Lambda para PUT"
+  description = "ARN da Lambda para PUT /lista-tarefa/{pk}/{sk}"
   type        = string
 }
 
 variable "lambda_function_delete_arn" {
-  description = "ARN da Lambda para DELETE"
+  description = "ARN da Lambda para DELETE /lista-tarefa/{pk}/{sk}"
   type        = string
 }
 

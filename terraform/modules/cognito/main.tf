@@ -37,6 +37,10 @@ resource "aws_cognito_user_pool" "user_pool" {
   }
 
   tags = var.tags
+
+  lifecycle {
+    ignore_changes = [schema]
+  }
 }
 
 # Cognito User Pool Client

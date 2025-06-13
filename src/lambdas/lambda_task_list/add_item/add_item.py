@@ -24,19 +24,38 @@ def lambda_handler(event, context):
 
 
 def create_item(item, table):
-    if "name" not in item or not item["name"].strip():
-        return create_error_response(400, "O nome do item é obrigatório")
+    required_fields = ["name", "user_id", "created_at"]
 
+    for field in required_fields:
+        if field not in item or not str(item[field]).strip():
+            return create_error_response(400, f"O campo '{field}' é obrigatório")
+
+    user_id = item["user_id"]
+    created_at = item["created_at"]
+    scheduled_for = item.get("scheduled_for")
+    task_type = item.get("task_type", "Tarefa")
+    status = item.get("status", "TODO").upper()
+    completed_at = item.get("completed_at")
     item_id = str(uuid.uuid4())
-    pk = datetime.now().strftime("%Y%m%d")
+
+    # SK com base na data de criação
+    date_str = created_at[:10].replace("-", "") 
+    sk = f"LIST#{date_str}#ITEM#{item_id}"
 
     item_attributes = {
-        "PK": f"LIST#{pk}",
-        "SK": f"ITEM#{item_id}",
+        "PK": f"USER#{user_id}",
+        "SK": sk,
         "name": item["name"],
-        "date": datetime.now().isoformat(),
-        "status": "todo",
+        "task_type": task_type,
+        "status": status,
+        "created_at": created_at,
+        "completed_at": completed_at,
+        "scheduled_for": scheduled_for,
+        "item_id": item_id,
     }
+
+    # Remove atributos com valor None
+    item_attributes = {k: v for k, v in item_attributes.items() if v is not None}
 
     table.put_item(Item=item_attributes)
 

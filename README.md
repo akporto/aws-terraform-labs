@@ -273,6 +273,40 @@ Ou use o script de limpeza:
 ./format-code.sh
 ```
 
+## 🧠 Integração com PySpark ETL
+
+Este projeto é compatível com o repositório [akporto/pyspark-etl-scripts](https://github.com/akporto/pyspark-etl-scripts), que contém três scripts desenvolvidos em PySpark para realizar operações de leitura, análise e exclusão de dados na tabela DynamoDB provisionada por este projeto.
+
+> A infraestrutura criada aqui — incluindo DynamoDB, permissões IAM e variáveis de ambiente — fornece a base ideal para executar scripts PySpark que interajam com o DynamoDB, seja localmente ou em ambientes como Colab, EMR ou Databricks (com configuração adicional).
+
+### 🔗 Scripts disponíveis no repositório de ETL
+
+- `envio_dynamodb.py`: Lê dados de um arquivo CSV, transforma e envia para uma tabela DynamoDB com chaves compostas (`PK` e `SK`).
+- `analise_abandono.py`: Identifica tarefas ou itens abandonados com base em regras de tempo e status, e exporta relatório `.csv`.
+- `deletar_usuario.py`: Remove todos os registros associados a um `user_id` específico no DynamoDB.
+
+### 💡 Como usar os dois projetos em conjunto
+
+1. **Provisionamento**: Use este projeto (`aws-terraform-labs`) para criar:
+   - Tabela DynamoDB com chave composta (`PK`, `SK`)
+   - Roles IAM com permissões de leitura/escrita/exclusão
+   - Variáveis reutilizáveis (região, nome da tabela, etc.)
+
+2. **Execução do ETL**:
+   - Clone o projeto [pyspark-etl-scripts](https://github.com/akporto/pyspark-etl-scripts)
+   - Configure as variáveis de ambiente:
+     ```python
+     os.environ["AWS_ACCESS_KEY_ID"] = "sua_access_key"
+     os.environ["AWS_SECRET_ACCESS_KEY"] = "sua_secret_key"
+     os.environ["AWS_DEFAULT_REGION"] = "sa-east-1"
+     os.environ["USER_ID"] = "uuid-do-usuario"
+     os.environ["DYNAMODB_TABLE_NAME"] = "nome-da-tabela"
+     ```
+   - Execute os scripts PySpark no ambiente de sua escolha
+
+> Essa integração une o provisionamento automatizado via Terraform com a flexibilidade de análise e manipulação de dados com PySpark, formando um pipeline completo e escalável.
+
+
 ## 🤝 Contribuição
 
 1. Fork o projeto
